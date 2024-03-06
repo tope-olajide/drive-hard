@@ -32,6 +32,11 @@ export function RaceScene() {
 
   const obstacle1Ref = useRef<Group>(null);
   const obstacle2Ref = useRef<Group>(null);
+  const obstacle3Ref = useRef<Group>(null);
+  const obstacle4Ref = useRef<Group>(null);
+  const obstacle5Ref = useRef<Group>(null);
+  const obstacle6Ref = useRef<Group>(null);
+  const obstacle7Ref = useRef<Group>(null);
 
   useEffect(() => {
     mainRoadRef.current?.scale.set(0.13, 0.13, 0.13);
@@ -182,11 +187,10 @@ export function RaceScene() {
       }
     }
 
-       if (obstacle2Ref.current) {
-      obstacle2Ref.current.position.z += 5 * delta;
-
-      if (obstacle2Ref.current.position.z > 9) {
-        obstacle2Ref.current.position.z = -10;
+       if (obstacle7Ref.current) {
+      obstacle7Ref.current.position.z += 5 * delta;
+      if (obstacle7Ref.current.position.z > 9) {
+        obstacle7Ref.current.position.z = -10;
       }
     } 
   });
@@ -277,7 +281,7 @@ export function RaceScene() {
         </mesh>
       </group> 
  */}
-      <group ref={obstacle2Ref}>
+     {/*  <group ref={obstacle2Ref}>
         <mesh
           ref={vanRef}
           position={[0.45, -0.34, 3]}
@@ -352,11 +356,425 @@ export function RaceScene() {
         >
           <Limousine />
         </mesh>
-      </group>
+      </group> */}
 
-      <group>
-        
-      </group>
+      {/* <group ref={obstacle3Ref}>
+      <mesh
+          ref={firetruckRef}
+          position={[-0.16, -0.34, 3.8]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Firetruck />
+        </mesh>
+        <mesh
+          ref={firetruckRef}
+          position={[-0.16, -0.34, 2.8]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Firetruck />
+        </mesh>
+        <mesh
+          ref={firetruckRef}
+          position={[-0.16, -0.34, 1.8]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Firetruck />
+        </mesh>
+
+        <mesh
+          ref={firetruckRef}
+          position={[-0.16, -0.34, 0]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Firetruck />
+        </mesh>
+
+        <mesh
+          ref={firetruckRef}
+          position={[0.45, -0.34, 3.8]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Firetruck />
+        </mesh>
+        <mesh
+          ref={firetruckRef}
+          position={[0.45, -0.34, 2.8]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Firetruck />
+        </mesh>
+        <mesh
+          ref={firetruckRef}
+          position={[0.45, -0.34, 1.8]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Firetruck />
+        </mesh>
+
+        <mesh
+          ref={firetruckRef}
+          position={[0.45, -0.34, 0]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Firetruck />
+        </mesh>
+
+        <mesh
+          ref={limoRef}
+          position={[0.14, -0.34, -3.8]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Limousine />
+        </mesh>
+        <mesh
+          ref={limoRef}
+          position={[-0.45, -0.34, -3.8]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Limousine />
+        </mesh>
+      </group> */}
+
+      {/* <group ref={obstacle4Ref}>
+      <mesh
+          ref={busRef}
+          position={[0.14, -0.34, 3.8]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Taxi />
+        </mesh>
+        <mesh
+          ref={busRef}
+          position={[-0.14, -0.34, 3.8]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Taxi />
+        </mesh>
+        <mesh
+          ref={busRef}
+          position={[0.45, -0.34, 3.8]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Taxi />
+        </mesh>
+        <mesh
+          ref={busRef}
+          position={[-0.45, -0.34, 1.5]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Taxi />
+        </mesh>
+        <mesh
+          ref={busRef}
+          position={[-0.45, -0.34, 0]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Taxi />
+        </mesh>
+
+        <mesh
+          ref={busRef}
+          position={[-0.45, -0.34, -2]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Taxi />
+        </mesh>
+
+        <mesh
+          ref={busRef}
+          position={[-0.14, -0.34, 0.5]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Taxi />
+        </mesh>
+        <mesh
+          ref={busRef}
+          position={[0.14, -0.34, -1.0]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Taxi />
+        </mesh>
+        <mesh
+          ref={busRef}
+          position={[0.45, -0.34, -4]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Taxi />
+        </mesh>
+        <mesh
+          ref={busRef}
+          position={[-0.16, -0.34, -4]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Taxi />
+        </mesh>
+        <mesh
+          ref={busRef}
+          position={[-0.45, -0.34, -4]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Taxi />
+        </mesh>
+      </group> */}
+     {/*  <group ref={obstacle5Ref}>
+      <mesh
+          ref={vanRef}
+          position={[0.45, -0.34, 3.8]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Van />
+        </mesh>
+        <mesh
+          ref={vanRef}
+          position={[0.45, -0.34, 3]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Van />
+        </mesh>
+        <mesh
+          ref={vanRef}
+          position={[-0.45, -0.34, 3.8]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Van />
+        </mesh>
+        <mesh
+          ref={vanRef}
+          position={[0.14, -0.34, 3]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Van />
+        </mesh>
+        <mesh
+          ref={vanRef}
+          position={[-0.14, -0.34, 1.5]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Van />
+        </mesh>
+        <mesh
+          ref={vanRef}
+          position={[-0.45, -0.34, 1.5]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Van />
+        </mesh>
+        <mesh
+          ref={vanRef}
+          position={[-0.45, -0.34, 0]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Van />
+        </mesh>
+        <mesh
+          ref={vanRef}
+          position={[-0.14, -0.34, 0]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Van />
+        </mesh>
+
+        <mesh
+          ref={vanRef}
+          position={[-0.14, -0.34, -4]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Van />
+        </mesh>
+        <mesh
+          ref={vanRef}
+          position={[0.14, -0.34, -3.3]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Van />
+        </mesh>
+        <mesh
+          ref={vanRef}
+          position={[0.45, -0.34, -3]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Van />
+        </mesh>
+</group> */}
+      
+     {/*  <group ref={obstacle6Ref}>
+      <mesh
+          ref={limoRef}
+          position={[-0.45, -0.34, 3.8]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Limousine />
+        </mesh>
+        <mesh
+          ref={limoRef}
+          position={[-0.45, -0.34, 3.0]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Limousine />
+        </mesh>
+
+        <mesh
+          ref={limoRef}
+          position={[-0.16, -0.34, 3.4]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Limousine />
+        </mesh>
+        <mesh
+          ref={limoRef}
+          position={[0.14, -0.34, 3.1]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Limousine />
+        </mesh>
+        <mesh
+          ref={limoRef}
+          position={[0.45, -0.34, 1.2]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Limousine />
+        </mesh>
+        <mesh
+          ref={limoRef}
+          position={[0.45, -0.34, 0.5]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Limousine />
+        </mesh>
+
+        <mesh
+          ref={limoRef}
+          position={[0.14, -0.34, 0]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Limousine />
+        </mesh>
+
+        <mesh
+          ref={limoRef}
+          position={[-0.14, -0.34, -0.8]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Limousine />
+        </mesh>
+
+        <mesh
+          ref={limoRef}
+          position={[-0.45, -0.34, -3.2]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Limousine />
+        </mesh>
+
+        <mesh
+          ref={limoRef}
+          position={[-0.16, -0.34, -3.5]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Limousine />
+        </mesh>
+        <mesh
+          ref={limoRef}
+          position={[0.16, -0.34, -4]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Limousine />
+        </mesh>
+      </group> */}
+
+      <group ref={obstacle7Ref}>
+      <mesh
+          ref={firetruckRef}
+          position={[-0.45, -0.34, 3.8]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Firetruck />
+        </mesh>
+        <mesh
+          ref={firetruckRef}
+          position={[-0.45, -0.34, 1.5]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Firetruck />
+        </mesh>
+
+        <mesh
+          ref={firetruckRef}
+          position={[-0.16, -0.34, 3.8]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Firetruck />
+        </mesh>
+        <mesh
+          ref={firetruckRef}
+          position={[-0.16, -0.34, 3]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Firetruck />
+        </mesh>
+
+        <mesh
+          ref={firetruckRef}
+          position={[0.16, -0.34, 0.5]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Firetruck />
+        </mesh>
+        <mesh
+          ref={firetruckRef}
+          position={[0.16, -0.34, 2]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Firetruck />
+        </mesh>
+        <mesh
+          ref={firetruckRef}
+          position={[0.45, -0.34, 4]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Firetruck />
+        </mesh>
+
+        <mesh
+          ref={firetruckRef}
+          position={[0.45, -0.34, -2.5]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Firetruck />
+        </mesh>
+
+        <mesh
+          ref={firetruckRef}
+          position={[0.14, -0.34, -4]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Firetruck />
+        </mesh>
+
+        <mesh
+          ref={firetruckRef}
+          position={[-0.45, -0.34, -3.8]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Firetruck />
+        </mesh>
+
+        <mesh
+          ref={firetruckRef}
+          position={[-0.45, -0.34, -2.3]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Firetruck />
+        </mesh>
+        <mesh
+          ref={firetruckRef}
+          position={[-0.45, -0.34, -1]}
+          scale={[0.0006, 0.0006, 0.0006]}
+        >
+          <Firetruck />
+        </mesh>
+</group>
+
     </>
   );
 }

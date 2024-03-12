@@ -1,7 +1,24 @@
 import { Camera, useFrame } from "@react-three/fiber";
-import { Ref, RefObject, createElement, useEffect, useRef, useState } from "react";
+import {
+  Ref,
+  RefObject,
+  createElement,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { MainRoad, MainRoadTwo, PickupTruck } from "../../GLTFModelsLoader";
-import { Box3, BufferGeometry, Group, Material, Mesh, NormalBufferAttributes, Object3D, Object3DEventMap, Vector3 } from "three";
+import {
+  Box3,
+  BufferGeometry,
+  Group,
+  Material,
+  Mesh,
+  NormalBufferAttributes,
+  Object3D,
+  Object3DEventMap,
+  Vector3,
+} from "three";
 import TWEEN, { Tween } from "@tweenjs/tween.js";
 import {
   Obstacle1,
@@ -12,6 +29,8 @@ import {
   Obstacle6,
   Obstacle7,
 } from "./Obstacles";
+import { Coin } from "../../FBXModelLoader";
+import { CoinGroupLane1, CoinGroupLane1_2, CoinGroupLane1_2_3, CoinGroupLane1_2_3_4, CoinGroupLane2, CoinGroupLane3, CoinGroupLane4 } from "./Coins";
 
 export function RaceScene() {
   const [roadSizeOnZAxis, setRoadSizeOnZAxis] = useState(0);
@@ -20,23 +39,39 @@ export function RaceScene() {
   const mainRoadTwoRef = useRef<Mesh>(null);
   const pickupTruckRef = useRef<Mesh>(null);
 
+
   let tweenLeft: Tween<Vector3>;
   let tweenRight: Tween<Vector3>;
 
   let activeObstacleOne = useRef<Group<Object3DEventMap>>(null);
   let activeObstacleTwo = useRef<Group<Object3DEventMap>>(null);
-  
+
+  let activeCoinOne = useRef<Group<Object3DEventMap>>(null);
+  let activeCoinTwo = useRef<Group<Object3DEventMap>>(null);
+
+
 
   let playerBoxCollider = new Box3(new Vector3(), new Vector3());
-  
-let obstacleOneBoxCollider= new Box3(new Vector3(), new Vector3());
-let obstacleTwoBoxCollider= new Box3(new Vector3(), new Vector3());
 
+  let obstacleOneBoxCollider = new Box3(new Vector3(), new Vector3());
+  let obstacleTwoBoxCollider = new Box3(new Vector3(), new Vector3());
+
+  let coinOneBoxCollider = new Box3(new Vector3(), new Vector3());
+  let coinTwoBoxCollider = new Box3(new Vector3(), new Vector3());
 
   const obstacleRefs = Array.from({ length: 7 }, () => useRef<Group>(null));
+  const coinRefs = Array.from({ length: 7 }, () => useRef<Group>(null));
 
   const getRandomPooledObstacle = () => {
     const availableItems = obstacleRefs.filter(
+      (item) => !item.current?.visible
+    );
+    const randomIndex = Math.floor(Math.random() * availableItems.length);
+    return availableItems[randomIndex];
+  };
+
+  const getRandomCoinsGroup = () => {
+    const availableItems = coinRefs.filter(
       (item) => !item.current?.visible
     );
     const randomIndex = Math.floor(Math.random() * availableItems.length);
@@ -49,19 +84,31 @@ let obstacleTwoBoxCollider= new Box3(new Vector3(), new Vector3());
     activeObstacle.current!.visible = true;
 
     activeObstacleOne = activeObstacle;
-   
   };
 
   const spawnObstacleTwo = () => {
-      const activeObstacle = getRandomPooledObstacle();
-      activeObstacle.current!.position.z = activeObstacleOne?.current!.position.z - 12
-      activeObstacle.current!.visible = true;
-    activeObstacleTwo = activeObstacle
-     
-   
+    const activeObstacle = getRandomPooledObstacle();
+    activeObstacle.current!.position.z =
+      activeObstacleOne?.current!.position.z - 12;
+    activeObstacle.current!.visible = true;
+    activeObstacleTwo = activeObstacle;
   };
 
-  const moveObstacleOne = (delta: number) => {
+  const spawnCoinOne = () => {
+    const activeCoinGroup = getRandomCoinsGroup();
+    activeCoinGroup.current!.position.z = -14;
+    activeCoinGroup.current!.visible = true;
+    activeCoinOne = activeCoinGroup;
+  };
+  const spawnCoinTwo = () => {
+    const activeCoin = getRandomCoinsGroup();
+    activeCoin.current!.position.z =
+    activeCoinOne?.current!.position.z - 12;
+    activeCoin.current!.visible = true;
+    activeCoinTwo = activeCoin;
+  };
+
+  const moveActiveObstacleOne = (delta: number) => {
     if (activeObstacleOne?.current) {
       if ((activeObstacleOne.current.visible = true)) {
         activeObstacleOne.current.position.z += 5 * delta;
@@ -74,7 +121,7 @@ let obstacleTwoBoxCollider= new Box3(new Vector3(), new Vector3());
     }
   };
 
-  const moveObstacleTwo = (delta: number) => {
+  const moveActiveObstacleTwo = (delta: number) => {
     if (activeObstacleTwo?.current) {
       if ((activeObstacleTwo.current.visible = true)) {
         activeObstacleTwo.current.position.z += 5 * delta;
@@ -87,38 +134,105 @@ let obstacleTwoBoxCollider= new Box3(new Vector3(), new Vector3());
     }
   };
 
+  const moveActiveCoinOne = (delta: number) => {
+    if (activeCoinOne?.current) {
+      if ((activeCoinOne.current.visible = true)) {
+        activeCoinOne.current.position.z += 5 * delta;
+        if (activeCoinOne.current.position.z > 9) {
+          activeCoinOne.current.position.z = -14;
+          activeCoinOne.current.visible = false;
+          spawnCoinOne();
+        }
+      }
+    }
+  };
+
+  const moveActiveCoinTwo = (delta: number) => {
+    if (activeCoinTwo?.current) {
+      if ((activeCoinTwo.current.visible = true)) {
+        activeCoinTwo.current.position.z += 5 * delta;
+        if (activeCoinTwo.current.position.z > 9) {
+          activeCoinTwo.current.position.z = -14;
+          activeCoinTwo.current.visible = false;
+          spawnCoinTwo();
+        }
+      }
+    }
+  };
+
+ 
+
   const gameOver = () => {
-    console.log('gameOver')
-  }
+    console.log("gameOver");
+  };
+
+  const collectCoins = () => {
+    console.log("Coin Collected");
+  };
+
 
   const detectCollisionWithObstacleOne = () => {
     if (activeObstacleOne.current) {
-       for (let i = 0; i < activeObstacleOne.current!.children.length; i += 1) {
-      obstacleOneBoxCollider.setFromObject(activeObstacleOne.current.children[i]);
-      if (playerBoxCollider.intersectsBox(obstacleOneBoxCollider)) {
-        gameOver();
+      for (let i = 0; i < activeObstacleOne.current!.children.length; i += 1) {
+        obstacleOneBoxCollider.setFromObject(
+          activeObstacleOne.current.children[i]
+        );
+        if (playerBoxCollider.intersectsBox(obstacleOneBoxCollider)) {
+          gameOver();
+        }
       }
     }
-    }
-  }
+  };
   const detectCollisionWithObstacleTwo = () => {
     if (activeObstacleTwo.current) {
-       for (let i = 0; i < activeObstacleTwo.current!.children.length; i += 1) {
-      obstacleTwoBoxCollider.setFromObject(activeObstacleTwo.current.children[i]);
-      if (playerBoxCollider.intersectsBox(obstacleTwoBoxCollider)) {
-        gameOver();
+      for (let i = 0; i < activeObstacleTwo.current!.children.length; i += 1) {
+        obstacleTwoBoxCollider.setFromObject(
+          activeObstacleTwo.current.children[i]
+        );
+        if (playerBoxCollider.intersectsBox(obstacleTwoBoxCollider)) {
+          gameOver();
+        }
       }
     }
+  };
+
+  const detectCollisionWithCoinOne = () => {
+    if (activeCoinOne.current) {
+      for (let i = 0; i < activeCoinOne.current!.children.length; i += 1) {
+        coinOneBoxCollider.setFromObject(
+          activeCoinOne.current.children[i]
+        );
+        if (playerBoxCollider.intersectsBox(coinOneBoxCollider)) {
+          activeCoinOne.current.children[i].visible = false;
+          collectCoins();
+        }
+      }
     }
-  }
+  };
+
+  const detectCollisionWithCoinTwo = () => {
+    if (activeCoinTwo.current) {
+      for (let i = 0; i < activeCoinTwo.current!.children.length; i += 1) {
+        coinTwoBoxCollider.setFromObject(
+          activeCoinTwo.current.children[i]
+        );
+        if (playerBoxCollider.intersectsBox(coinTwoBoxCollider)) {
+          activeCoinTwo.current.children[i].visible = false;
+          collectCoins();
+        }
+      }
+    }
+  };
   useEffect(() => {
-   // playerBoxCollider = new Box3(new Vector3(), new Vector3());
+    // playerBoxCollider = new Box3(new Vector3(), new Vector3());
     obstacleOneBoxCollider = new Box3(new Vector3(), new Vector3());
     obstacleTwoBoxCollider = new Box3(new Vector3(), new Vector3());
     const timer = setTimeout(() => {
-      spawnObstacleOne();
+     /*  spawnObstacleOne();
       spawnObstacleTwo();
-
+ */
+      spawnCoinOne()
+      spawnCoinTwo()
       setIsHeadStart(true);
     }, 4000);
 
@@ -225,17 +339,20 @@ let obstacleTwoBoxCollider= new Box3(new Vector3(), new Vector3());
           mainRoadRef.current!.position.z - roadSizeOnZAxis;
       }
     }
-     if (pickupTruckRef.current) {
-           playerBoxCollider.setFromObject(pickupTruckRef.current);
-    } 
+    if (pickupTruckRef.current) {
+      playerBoxCollider.setFromObject(pickupTruckRef.current);
+    }
 
     if (isHeadStart) {
-      moveObstacleOne(delta);
-      moveObstacleTwo(delta);
+     /*  moveActiveObstacleOne(delta);
+      moveActiveObstacleTwo(delta);
       detectCollisionWithObstacleOne();
-      detectCollisionWithObstacleTwo();
+      detectCollisionWithObstacleTwo(); */
+      moveActiveCoinOne(delta)
+      moveActiveCoinTwo(delta)
+      detectCollisionWithCoinOne()
+      detectCollisionWithCoinTwo()
     }
-   
 
     // moveVisibleObstacles(delta);
     // hideObstacles();
@@ -253,12 +370,14 @@ let obstacleTwoBoxCollider= new Box3(new Vector3(), new Vector3());
       <mesh ref={pickupTruckRef} rotation={[0, 180 * (Math.PI / 180), 0]}>
         <PickupTruck />
       </mesh>
-      <group ref={activeObstacleOne}>
-        
-      </group>
-      <group ref={activeObstacleTwo}>
-        
-</group>
+      <group ref={activeObstacleOne}></group>
+      <group ref={activeObstacleTwo}></group>
+
+      <group ref={activeCoinOne}></group>
+      <group ref={activeCoinTwo}></group>
+
+     
+
       {obstacleRefs.map((ref, i) => (
         <group ref={ref} position={[0, 0, -14]} visible={false} key={i}>
           {createElement(
@@ -274,8 +393,23 @@ let obstacleTwoBoxCollider= new Box3(new Vector3(), new Vector3());
           )}
         </group>
       ))}
+      {coinRefs.map((ref, i) => (
+        <group ref={ref} position={[0, 0, -14]} visible={false} key={i}>
+          {createElement(
+            [
+              CoinGroupLane1,
+              CoinGroupLane2,
+              CoinGroupLane3,
+              CoinGroupLane4,
+              CoinGroupLane1_2,
+              CoinGroupLane1_2_3,
+              CoinGroupLane1_2_3_4,
+            ][i]
+          )}
+        </group>
+      ))}
 
- {/* <mesh ref={playerBoxCollider}
+      {/* <mesh ref={playerBoxCollider}
      
      
         scale={[0.1, 0.1, 0.1]}

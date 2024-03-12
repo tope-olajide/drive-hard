@@ -66,3 +66,13 @@ export const Ambulance = () => {
     </>
   );
 };
+
+
+export const Coin = () => {
+  const mesh = useLoader(FBXLoader, "./assets/Coin.fbx");
+  return (
+    <>
+      <primitive object={mesh.clone()} />
+    </>
+  );
+}

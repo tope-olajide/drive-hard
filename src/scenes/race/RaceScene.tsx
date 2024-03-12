@@ -1,52 +1,136 @@
 import { Camera, useFrame } from "@react-three/fiber";
-import { useEffect, useRef, useState } from "react";
+import { Ref, RefObject, createElement, useEffect, useRef, useState } from "react";
 import { MainRoad, MainRoadTwo, PickupTruck } from "../../GLTFModelsLoader";
-import { Box3, Group, Mesh, Vector3 } from "three";
-
+import { Box3, BufferGeometry, Group, Material, Mesh, NormalBufferAttributes, Object3D, Object3DEventMap, Vector3 } from "three";
 import TWEEN, { Tween } from "@tweenjs/tween.js";
 import {
-  Ambulance,
-  Bus,
-  Firetruck,
-  Limousine,
-  Taxi,
-  Van,
-} from "../../FBXModelLoader";
-import { Obstacle7 } from "./Obstacles";
+  Obstacle1,
+  Obstacle2,
+  Obstacle3,
+  Obstacle4,
+  Obstacle5,
+  Obstacle6,
+  Obstacle7,
+} from "./Obstacles";
 
 export function RaceScene() {
   const [roadSizeOnZAxis, setRoadSizeOnZAxis] = useState(0);
-
-  //  const roadBox = new Box3().setFromObject(road.scene);
+  const [isHeadStart, setIsHeadStart] = useState(false);
   const mainRoadRef = useRef<Mesh>(null);
   const mainRoadTwoRef = useRef<Mesh>(null);
   const pickupTruckRef = useRef<Mesh>(null);
-  const taxiRef = useRef<Mesh>(null);
-  const limoRef = useRef<Mesh>(null);
-  const firetruckRef = useRef<Mesh>(null);
-  const vanRef = useRef<Mesh>(null);
-  const busRef = useRef<Mesh>(null);
-  const ambulanceRef = useRef<Mesh>(null);
 
   let tweenLeft: Tween<Vector3>;
   let tweenRight: Tween<Vector3>;
 
-  const obstacle1Ref = useRef<Group>(null);
-  const obstacle2Ref = useRef<Group>(null);
-  const obstacle3Ref = useRef<Group>(null);
-  const obstacle4Ref = useRef<Group>(null);
-  const obstacle5Ref = useRef<Group>(null);
-  const obstacle6Ref = useRef<Group>(null);
-  const obstacle7Ref = useRef<Group>(null);
+  let activeObstacleOne = useRef<Group<Object3DEventMap>>(null);
+  let activeObstacleTwo = useRef<Group<Object3DEventMap>>(null);
+  
+
+  let playerBoxCollider = new Box3(new Vector3(), new Vector3());
+  
+let obstacleOneBoxCollider= new Box3(new Vector3(), new Vector3());
+let obstacleTwoBoxCollider= new Box3(new Vector3(), new Vector3());
+
+
+  const obstacleRefs = Array.from({ length: 7 }, () => useRef<Group>(null));
+
+  const getRandomPooledObstacle = () => {
+    const availableItems = obstacleRefs.filter(
+      (item) => !item.current?.visible
+    );
+    const randomIndex = Math.floor(Math.random() * availableItems.length);
+    return availableItems[randomIndex];
+  };
+
+  const spawnObstacleOne = () => {
+    const activeObstacle = getRandomPooledObstacle();
+    activeObstacle.current!.position.z = -14;
+    activeObstacle.current!.visible = true;
+
+    activeObstacleOne = activeObstacle;
+   
+  };
+
+  const spawnObstacleTwo = () => {
+      const activeObstacle = getRandomPooledObstacle();
+      activeObstacle.current!.position.z = activeObstacleOne?.current!.position.z - 12
+      activeObstacle.current!.visible = true;
+    activeObstacleTwo = activeObstacle
+     
+   
+  };
+
+  const moveObstacleOne = (delta: number) => {
+    if (activeObstacleOne?.current) {
+      if ((activeObstacleOne.current.visible = true)) {
+        activeObstacleOne.current.position.z += 5 * delta;
+        if (activeObstacleOne.current.position.z > 9) {
+          activeObstacleOne.current.position.z = -14;
+          activeObstacleOne.current.visible = false;
+          spawnObstacleOne();
+        }
+      }
+    }
+  };
+
+  const moveObstacleTwo = (delta: number) => {
+    if (activeObstacleTwo?.current) {
+      if ((activeObstacleTwo.current.visible = true)) {
+        activeObstacleTwo.current.position.z += 5 * delta;
+        if (activeObstacleTwo.current.position.z > 9) {
+          activeObstacleTwo.current.position.z = -14;
+          activeObstacleTwo.current.visible = false;
+          spawnObstacleTwo();
+        }
+      }
+    }
+  };
+
+  const gameOver = () => {
+    console.log('gameOver')
+  }
+
+  const detectCollisionWithObstacleOne = () => {
+    if (activeObstacleOne.current) {
+       for (let i = 0; i < activeObstacleOne.current!.children.length; i += 1) {
+      obstacleOneBoxCollider.setFromObject(activeObstacleOne.current.children[i]);
+      if (playerBoxCollider.intersectsBox(obstacleOneBoxCollider)) {
+        gameOver();
+      }
+    }
+    }
+  }
+  const detectCollisionWithObstacleTwo = () => {
+    if (activeObstacleTwo.current) {
+       for (let i = 0; i < activeObstacleTwo.current!.children.length; i += 1) {
+      obstacleTwoBoxCollider.setFromObject(activeObstacleTwo.current.children[i]);
+      if (playerBoxCollider.intersectsBox(obstacleTwoBoxCollider)) {
+        gameOver();
+      }
+    }
+    }
+  }
+  useEffect(() => {
+   // playerBoxCollider = new Box3(new Vector3(), new Vector3());
+    obstacleOneBoxCollider = new Box3(new Vector3(), new Vector3());
+    obstacleTwoBoxCollider = new Box3(new Vector3(), new Vector3());
+    const timer = setTimeout(() => {
+      spawnObstacleOne();
+      spawnObstacleTwo();
+
+      setIsHeadStart(true);
+    }, 4000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     mainRoadRef.current?.scale.set(0.13, 0.13, 0.13);
     mainRoadRef.current?.position.set(0, -0.4, 0);
     mainRoadTwoRef.current?.scale.set(0.13, 0.13, 0.13);
-
     pickupTruckRef.current?.scale.set(0.07, 0.07, 0.07);
     pickupTruckRef.current?.position.set(0.14, -0.33, 3.8);
-    //pickupTruckRef.current?.rotateY(180 * (Math.PI / 180));
 
     if (mainRoadRef.current && mainRoadTwoRef.current) {
       const mainRoadboundingBox = new Box3().setFromObject(mainRoadRef.current);
@@ -56,24 +140,34 @@ export function RaceScene() {
       mainRoadTwoRef.current.position.set(0, -0.4, -15);
     }
   }, []);
+
   tweenLeft = new TWEEN.Tween(pickupTruckRef.current?.position);
   tweenRight = new TWEEN.Tween(pickupTruckRef.current?.position);
-  const moveLeft = (camera: Camera) => {
-    if (pickupTruckRef.current!.position.x !== -0.46) {
-      const tweenCameraLeft = new Tween(camera.position)
-        .to({ x: camera.position.x - 0.21 }, 200)
+
+  const move = (camera: Camera, direction: "left" | "right") => {
+    const isLeft = direction === "left";
+    const position = pickupTruckRef.current!.position.x;
+    const limit = isLeft ? -0.46 : 0.44;
+    if (position !== limit) {
+      const tweenCamera = new Tween(camera.position)
+        .to({ x: camera.position.x + (isLeft ? -0.21 : 0.21) }, 200)
         .easing(TWEEN.Easing.Quadratic.Out);
 
-      pickupTruckRef.current!.rotation.y = -165 * (Math.PI / 180);
+      pickupTruckRef.current!.rotation.y =
+        (isLeft ? -165 : 165) * (Math.PI / 180);
       const resetRotation = new TWEEN.Tween(pickupTruckRef.current!.rotation)
         .to(
-          { y: pickupTruckRef.current!.rotation.y - 15 * (Math.PI / 180) },
+          {
+            y:
+              pickupTruckRef.current!.rotation.y +
+              (isLeft ? -15 : 15) * (Math.PI / 180),
+          },
           50
         )
         .easing(TWEEN.Easing.Quadratic.Out);
 
-      tweenLeft = new TWEEN.Tween(pickupTruckRef.current!.position)
-        .to({ x: pickupTruckRef.current!.position.x - 0.3 }, 200)
+      const tween = new TWEEN.Tween(pickupTruckRef.current!.position)
+        .to({ x: position + (isLeft ? -0.3 : 0.3) }, 200)
         .easing(TWEEN.Easing.Quadratic.Out)
         .onComplete(() => {
           resetRotation.start();
@@ -82,69 +176,25 @@ export function RaceScene() {
           );
         })
         .onUpdate(() => {
-          if (pickupTruckRef.current!.position.x < -0.46) {
-            pickupTruckRef.current!.position.x = -0.46;
+          if (isLeft ? position < limit : position > limit) {
+            pickupTruckRef.current!.position.x = limit;
           }
-
-          if (camera.position.x < -0.42) {
-            camera.position.x = -0.42;
-          }
-        });
-      if (tweenRight.isPlaying()) {
-        tweenRight.stop();
-      }
-
-      tweenLeft.start();
-      tweenCameraLeft.start();
-    }
-  };
-
-  const moveRight = (camera: Camera) => {
-    if (pickupTruckRef.current!.position.x !== 0.44) {
-      pickupTruckRef.current!.rotation.y = 165 * (Math.PI / 180);
-      const resetRotation = new TWEEN.Tween(pickupTruckRef.current!.rotation)
-        .to(
-          { y: pickupTruckRef.current!.rotation.y + 15 * (Math.PI / 180) },
-          50
-        )
-        .easing(TWEEN.Easing.Quadratic.Out);
-
-      const tweenCameraRight = new Tween(camera.position)
-        .to({ x: camera.position.x + 0.21 }, 200)
-        .easing(TWEEN.Easing.Quadratic.Out);
-      tweenCameraRight.start();
-
-      tweenRight = new TWEEN.Tween(pickupTruckRef.current!.position)
-        .to({ x: pickupTruckRef.current!.position.x + 0.3 }, 200)
-        .easing(TWEEN.Easing.Quadratic.Out)
-        .onComplete(() => {
-          resetRotation.start();
-
-          pickupTruckRef.current!.position.x = Number(
-            pickupTruckRef.current!.position.x.toFixed(2)
-          );
-        })
-        .onUpdate(() => {
-          if (pickupTruckRef.current!.position.x > 0.44) {
-            pickupTruckRef.current!.position.x = 0.44;
-          }
-          if (camera.position.x > 0.21) {
-            camera.position.x = 0.21;
+          if (isLeft ? camera.position.x < -0.42 : camera.position.x > 0.21) {
+            camera.position.x = isLeft ? -0.42 : 0.21;
           }
         });
-      if (tweenLeft.isPlaying()) {
-        tweenLeft.stop();
+
+      if ((isLeft ? tweenRight : tweenLeft).isPlaying()) {
+        (isLeft ? tweenRight : tweenLeft).stop();
       }
-      tweenRight.start();
+
+      tween.start();
+      tweenCamera.start();
     }
   };
 
   useFrame((state, delta) => {
-    /*  const time = state.clock.getDelta();
-    setDelta(time); */
-
     TWEEN.update();
-
     document.onkeydown = (e) => {
       if (e.key === " ") {
         if (state.clock.running) {
@@ -154,24 +204,13 @@ export function RaceScene() {
         }
       }
       if (e.key === "ArrowLeft") {
-        /*  */
-        moveLeft(state.camera);
-        console.log(state.camera.position.x);
+        move(state.camera, "left");
       }
-
       if (e.key === "ArrowRight") {
-        //   console.log(pickupTruckRef.current!.position.x)
-
-        moveRight(state.camera);
-        console.log(state.camera.position.x);
+        move(state.camera, "right");
       }
     };
 
-    // useArrowKeyPress(handleArrowKeyPress);
-
-    /* if (mainRoadTwoRef.current) {
-      mainRoadTwoRef.current.position.z += delta * 0.009;
-    } */
     if (mainRoadRef.current) {
       mainRoadRef.current.position.z += 5 * delta;
       if (mainRoadRef.current.position.z > 19.5) {
@@ -181,19 +220,26 @@ export function RaceScene() {
     }
     if (mainRoadTwoRef.current) {
       mainRoadTwoRef.current.position.z += 5 * delta;
-      //console.log(mainRoadTwoRef.current.position.z)
       if (mainRoadTwoRef.current.position.z > 19.5) {
         mainRoadTwoRef.current.position.z =
           mainRoadRef.current!.position.z - roadSizeOnZAxis;
       }
     }
-
-       if (obstacle7Ref.current) {
-      obstacle7Ref.current.position.z += 5 * delta;
-      if (obstacle7Ref.current.position.z > 9) {
-        obstacle7Ref.current.position.z = -10;
-      }
+     if (pickupTruckRef.current) {
+           playerBoxCollider.setFromObject(pickupTruckRef.current);
     } 
+
+    if (isHeadStart) {
+      moveObstacleOne(delta);
+      moveObstacleTwo(delta);
+      detectCollisionWithObstacleOne();
+      detectCollisionWithObstacleTwo();
+    }
+   
+
+    // moveVisibleObstacles(delta);
+    // hideObstacles();
+    //spawnObstacles();
   });
 
   return (
@@ -207,11 +253,37 @@ export function RaceScene() {
       <mesh ref={pickupTruckRef} rotation={[0, 180 * (Math.PI / 180), 0]}>
         <PickupTruck />
       </mesh>
-      <group ref={obstacle7Ref}>
-        <Obstacle7 />
+      <group ref={activeObstacleOne}>
+        
+      </group>
+      <group ref={activeObstacleTwo}>
+        
 </group>
-      
+      {obstacleRefs.map((ref, i) => (
+        <group ref={ref} position={[0, 0, -14]} visible={false} key={i}>
+          {createElement(
+            [
+              Obstacle1,
+              Obstacle2,
+              Obstacle3,
+              Obstacle4,
+              Obstacle5,
+              Obstacle6,
+              Obstacle7,
+            ][i]
+          )}
+        </group>
+      ))}
 
+ {/* <mesh ref={playerBoxCollider}
+     
+     
+        scale={[0.1, 0.1, 0.1]}
+        position={[0,0,0]}
+     >
+      <boxGeometry args={[1, 1, 1]} />
+      <meshStandardMaterial color={'orange'} />
+    </mesh>  */}
     </>
   );
 }

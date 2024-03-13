@@ -1,6 +1,6 @@
 
-import "./App.css";
-import FirstScene from "./scenes/FirstScene";
+
+import FirstScene from "./scenes/race";
 
 
 
@@ -8,10 +8,10 @@ function App() {
   
   return (
     <>
-      <div id="app">
+    
         
       <FirstScene />
-      </div>
+      
     </>
   );
 }

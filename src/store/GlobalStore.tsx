@@ -4,11 +4,15 @@ import React, { createContext, ReactNode, useContext, useRef, MutableRefObject }
 
 interface GameContextType {
   isGamePausedRef: MutableRefObject<boolean>;
+  isGameOverRef: MutableRefObject<boolean>;
   modalRef: MutableRefObject<HTMLDivElement>;
+  gameOverModalRef: MutableRefObject<HTMLDivElement>;
   coins: MutableRefObject<number>;
   pauseGame: () => void;
   resumeGame: () => void;
   increaseCoins: () => void;
+  setRestartGame: () => void;
+  setGameOver: () => void;
 }
 
 const GlobalStateContext = createContext<GameContextType | undefined>(undefined);
@@ -30,21 +34,36 @@ export const GlobalStateProvider: React.FC<GlobalStateProviderProps> = ({
   children,
 }) => {
   const isGamePausedRef = useRef<boolean>(false);
+  const isGameOverRef = useRef<boolean>(false);
   const modalRef = useRef();
+  const gameOverModalRef = useRef();
   let coins = useRef(0);
-
 
   const pauseGame = () => {
     isGamePausedRef.current = true;
-    console.log(isGamePausedRef.current);
     modalRef.current.style.display = "block";
-   // clock.stop()
   };
   
   const resumeGame = () => {
     isGamePausedRef.current = false;
     modalRef.current!.style.display = "none";
   };
+
+  const setGameOver = () => {
+    isGameOverRef.current = true;
+    const gameOverModalContainer = document.getElementById("gameOverModalContainer");
+    if (gameOverModalContainer) {
+      gameOverModalContainer.style.display = 'block'
+    }
+  }
+
+  const setRestartGame = () => {
+    isGameOverRef.current = false;
+    const gameOverModalContainer = document.getElementById("gameOverModalContainer");
+    if (gameOverModalContainer) {
+      gameOverModalContainer.style.display = 'none'
+    }
+  }
 
   const increaseCoins = () => {
     coins.current += 1
@@ -58,6 +77,10 @@ export const GlobalStateProvider: React.FC<GlobalStateProviderProps> = ({
     modalRef,
     coins,
     increaseCoins,
+    gameOverModalRef,
+    setRestartGame,
+    setGameOver,
+    isGameOverRef
   };
 
   return (

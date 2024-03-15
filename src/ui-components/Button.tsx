@@ -8,7 +8,7 @@ const Button = ({
 }: {
   name: string;
   id?: string;
-  handleClick: MouseEventHandler<HTMLButtonElement>;
+  handleClick?: MouseEventHandler<HTMLButtonElement>;
 }) => {
   return (
     <>

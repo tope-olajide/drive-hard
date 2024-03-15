@@ -1,6 +1,5 @@
 import Button from "./Button";
 
-const clicky = () => {};
 export const PauseModal = () => {
   return (
     <>
@@ -12,8 +11,8 @@ export const PauseModal = () => {
         </div>
         <div className="modal-body">
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <Button id="resumeGame" name="Resume" handleClick={clicky} />
-            <Button name="Quit" handleClick={clicky} />
+            <Button id="resumeGameButton" name="Resume" />
+            <Button name="Quit" />
           </div>
         </div>
 
@@ -26,7 +25,22 @@ export const PauseModal = () => {
 export const PauseGameButton = () => {
   return (
     <>
-    <Button id="pauseGame" name="||" handleClick={clicky} />
+      <Button id="pauseGameButton" name="| |" />
     </>
-  )
-}
+  );
+};
+
+export const CurrentCoinsAndScoresBoard = () => {
+  return (
+    <>
+      <section className="current-coins-scores-container">
+        <h3>
+          Coins: <span className="coins-count">0</span>
+        </h3>
+        <h3>
+          Scores:<span className="scores-count">0</span>
+        </h3>
+      </section>
+    </>
+  );
+};

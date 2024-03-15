@@ -43,7 +43,7 @@ import {
 import { useGlobalState } from "../../store/GlobalStore";
 
 export function RaceScene() {
-  const { pauseGame, resumeGame, isGamePausedRef, coins, increaseCoins } =
+  const { pauseGame, resumeGame, isGamePausedRef, coins, increaseCoins , isGameOverRef, setGameOver} =
     useGlobalState();
   const [roadSizeOnZAxis, setRoadSizeOnZAxis] = useState(0);
   const [isHeadStart, setIsHeadStart] = useState(false);
@@ -181,13 +181,11 @@ export function RaceScene() {
   };
 
   const gameOver = () => {
-    console.log("gameOver");
+    
+    setGameOver()
 
   };
 
-  const collectCoins = () => {
-    console.log("Coin Collected");
-  };
 
   const detectCollisionWithObstacleOne = () => {
     if (activeObstacleOne.current) {
@@ -219,7 +217,7 @@ export function RaceScene() {
       for (let i = 0; i < activeCoinOne.current!.children.length; i += 1) {
         coinOneBoxCollider.setFromObject(activeCoinOne.current.children[i]);
         if (playerBoxCollider.intersectsBox(coinOneBoxCollider)) {
-          if (!isGamePausedRef.current) {
+          if (!isGamePausedRef.current && !isGameOverRef.current) {
             activeCoinOne.current.children[i].position.z += 100;
             activeCoinOne.current.children[i].visible = false;
             increaseCoins();
@@ -240,7 +238,7 @@ export function RaceScene() {
       for (let i = 0; i < activeCoinTwo.current!.children.length; i += 1) {
         coinTwoBoxCollider.setFromObject(activeCoinTwo.current.children[i]);
         if (playerBoxCollider.intersectsBox(coinTwoBoxCollider)) {
-          if (!isGamePausedRef.current) {
+          if (!isGamePausedRef.current && !isGameOverRef.current) {
             activeCoinTwo.current.children[i].position.z += 100;
             activeCoinTwo.current.children[i].visible = false;
             increaseCoins();
@@ -255,9 +253,9 @@ export function RaceScene() {
       }
     }
   };
-  // const [isPaused, setIsPaused] = useState(false)
+ 
   const handlePause = () => {
-    /*  setIsPaused(!isPaused) */
+   
     pauseGame();
   };
   const handleResume = () => {
@@ -269,7 +267,7 @@ export function RaceScene() {
     const resumeButton = document.getElementById("resumeGameButton");
 
     if (pauseButton && resumeButton) {
-      // Add event listener when component mounts
+
       pauseButton.addEventListener("click", handlePause);
       resumeButton.addEventListener("click", handleResume);
 
@@ -389,7 +387,13 @@ export function RaceScene() {
       state.clock.start();
     }
 
-    if (!isGamePausedRef.current) {
+    if (isGameOverRef.current) {
+      state.clock.stop();
+    } else {
+      state.clock.start();
+    }
+
+    if (!isGamePausedRef.current && !isGameOverRef.current ) {
       scores += Math.round(speed * delta + 1);
       (document.querySelector(".scores-count") as HTMLElement).innerHTML =
         scores.toString();

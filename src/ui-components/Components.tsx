@@ -66,6 +66,22 @@ export const CurrentCoinsAndScoresBoard = () => {
   );
 };
 
+export const TotalCoinsAndScoresBoard = () => {
+  return (
+    <>
+      <section className="current-coins-scores-container">
+        
+        <h3>
+         High Scores:<span className="scores-count">0</span>
+        </h3>
+        <h3>
+          Total Coins: <span className="coins-count">0</span>
+        </h3>
+      </section>
+    </>
+  );
+};
+
 export const GameOverModal = () => {
  // const {setRestartGame} =
   useGlobalState();

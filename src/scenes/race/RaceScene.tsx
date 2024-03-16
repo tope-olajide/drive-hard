@@ -43,10 +43,17 @@ import {
 import { useGlobalState } from "../../store/GlobalStore";
 
 export function RaceScene() {
-  const { pauseGame, resumeGame, isGamePausedRef, coins, increaseCoins , isGameOverRef, setGameOver, setRestartGame} =
-    useGlobalState();
+  const {
+    pauseGame,
+    resumeGame,
+    isGamePausedRef,
+    coins,
+    increaseCoins,
+    isGameOverRef,
+    setGameOver,
+    setRestartGame,
+  } = useGlobalState();
   const [roadSizeOnZAxis, setRoadSizeOnZAxis] = useState(0);
-  const [isHeadStart, setIsHeadStart] = useState(false);
   const mainRoadRef = useRef<Mesh>(null);
   const mainRoadTwoRef = useRef<Mesh>(null);
   const pickupTruckRef = useRef<Mesh>(null);
@@ -183,11 +190,8 @@ export function RaceScene() {
   };
 
   const gameOver = () => {
-    
-    setGameOver()
-
+    setGameOver();
   };
-
 
   const detectCollisionWithObstacleOne = () => {
     if (activeObstacleOne.current) {
@@ -255,9 +259,8 @@ export function RaceScene() {
       }
     }
   };
- 
+
   const handlePause = () => {
-   
     pauseGame();
   };
   const handleResume = () => {
@@ -268,13 +271,13 @@ export function RaceScene() {
     activeObstacleOne.current!.position.z = -14;
     activeObstacleTwo.current!.position.z =
       activeObstacleOne?.current!.position.z - 14;
-    activeObstacleOne.current!.visible = false
+    activeObstacleOne.current!.visible = false;
     activeObstacleTwo.current!.visible = false;
     //  setIsHeadStart(false);
     isHeadStartRef.current = false;
     setRestartGame();
 
-    console.log('ffmdm')
+    console.log("ffmdm");
     for (let i = 0; i < obstacleRefs.length; i += 1) {
       if (obstacleRefs[i].current!.visible) {
         obstacleRefs[i].current!.visible = false;
@@ -294,9 +297,9 @@ export function RaceScene() {
  */
       spawnCoinOne();
       spawnCoinTwo();
-     // setIsHeadStart(true);
-      isHeadStartRef.current = true
-      clearTimeout(timer)
+      // setIsHeadStart(true);
+      isHeadStartRef.current = true;
+      clearTimeout(timer);
     }, 4000);
   };
 
@@ -306,7 +309,6 @@ export function RaceScene() {
     const restartGameButton = document.getElementById("restartGameButton");
 
     if (pauseButton && resumeButton && restartGameButton) {
-
       pauseButton.addEventListener("click", handlePause);
       resumeButton.addEventListener("click", handleResume);
       restartGameButton.addEventListener("click", handleGameRestart);
@@ -329,8 +331,8 @@ export function RaceScene() {
  */
       spawnCoinOne();
       spawnCoinTwo();
-     // setIsHeadStart(true);
-      isHeadStartRef.current = true
+      // setIsHeadStart(true);
+      isHeadStartRef.current = true;
     }, 4000);
 
     return () => clearTimeout(timer);
@@ -431,7 +433,7 @@ export function RaceScene() {
 
     /* */
 
-    if (!isGamePausedRef.current && !isGameOverRef.current ) {
+    if (!isGamePausedRef.current && !isGameOverRef.current) {
       scores += Math.round(speed * delta + 1);
       (document.querySelector(".scores-count") as HTMLElement).innerHTML =
         scores.toString();
@@ -455,16 +457,16 @@ export function RaceScene() {
     }
 
     if (isHeadStartRef.current) {
-        moveActiveObstacleOne(delta);
+      moveActiveObstacleOne(delta);
       moveActiveObstacleTwo(delta);
       detectCollisionWithObstacleOne();
-      detectCollisionWithObstacleTwo(); 
+      detectCollisionWithObstacleTwo();
       moveActiveCoinOne(delta);
       moveActiveCoinTwo(delta);
       detectCollisionWithCoinOne();
       detectCollisionWithCoinTwo();
     }
-    
+
     // moveVisibleObstacles(delta);
     // hideObstacles();
     //spawnObstacles();

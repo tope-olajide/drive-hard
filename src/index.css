@@ -171,4 +171,17 @@ font-size: 16px;
   position: absolute;
   z-index: 2;
   color: rgb(50, 1, 107);
+  margin-left: 6px;
+}
+
+.main-menu-container{
+  position: absolute;
+  z-index: 2;
+  justify-content: center;
+  width: 100%;
+  align-items: center;
+  bottom: 0px;
+  margin-bottom: 40px;
+  display: flex;
+  flex-wrap: wrap;
 }

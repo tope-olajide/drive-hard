@@ -43,7 +43,7 @@ import {
 import { useGlobalState } from "../../store/GlobalStore";
 
 export function RaceScene() {
-  const { pauseGame, resumeGame, isGamePausedRef, coins, increaseCoins , isGameOverRef, setGameOver} =
+  const { pauseGame, resumeGame, isGamePausedRef, coins, increaseCoins , isGameOverRef, setGameOver, setRestartGame} =
     useGlobalState();
   const [roadSizeOnZAxis, setRoadSizeOnZAxis] = useState(0);
   const [isHeadStart, setIsHeadStart] = useState(false);
@@ -74,6 +74,8 @@ export function RaceScene() {
 
   const obstacleRefs = Array.from({ length: 7 }, () => useRef<Group>(null));
   const coinRefs = Array.from({ length: 7 }, () => useRef<Group>(null));
+
+  const isHeadStartRef = useRef<boolean>(false);
 
   const getRandomPooledObstacle = () => {
     const availableItems = obstacleRefs.filter(
@@ -171,7 +173,7 @@ export function RaceScene() {
       if ((activeCoinTwo.current.visible = true)) {
         activeCoinTwo.current.position.z += 5 * delta;
         if (activeCoinTwo.current.position.z > 9) {
-          displayHiddenCoinsChildren(activeCoinOne.current);
+          displayHiddenCoinsChildren(activeCoinTwo.current);
           activeCoinTwo.current.position.z = -14;
           activeCoinTwo.current.visible = false;
           spawnCoinTwo();
@@ -262,18 +264,57 @@ export function RaceScene() {
     resumeGame();
   };
 
+  const handleGameRestart = () => {
+    activeObstacleOne.current!.position.z = -14;
+    activeObstacleTwo.current!.position.z =
+      activeObstacleOne?.current!.position.z - 14;
+    activeObstacleOne.current!.visible = false
+    activeObstacleTwo.current!.visible = false;
+    //  setIsHeadStart(false);
+    isHeadStartRef.current = false;
+    setRestartGame();
+
+    console.log('ffmdm')
+    for (let i = 0; i < obstacleRefs.length; i += 1) {
+      if (obstacleRefs[i].current!.visible) {
+        obstacleRefs[i].current!.visible = false;
+        obstacleRefs[i].current!.position.z = -14;
+      }
+    }
+
+    for (let i = 0; i < coinRefs.length; i += 1) {
+      if (coinRefs[i].current!.visible) {
+        coinRefs[i].current!.visible = false;
+      }
+    }
+
+    const timer = setTimeout(() => {
+      /*  spawnObstacleOne();
+      spawnObstacleTwo();
+ */
+      spawnCoinOne();
+      spawnCoinTwo();
+     // setIsHeadStart(true);
+      isHeadStartRef.current = true
+      clearTimeout(timer)
+    }, 4000);
+  };
+
   useEffect(() => {
     const pauseButton = document.getElementById("pauseGameButton");
     const resumeButton = document.getElementById("resumeGameButton");
+    const restartGameButton = document.getElementById("restartGameButton");
 
-    if (pauseButton && resumeButton) {
+    if (pauseButton && resumeButton && restartGameButton) {
 
       pauseButton.addEventListener("click", handlePause);
       resumeButton.addEventListener("click", handleResume);
+      restartGameButton.addEventListener("click", handleGameRestart);
 
       return () => {
         pauseButton.removeEventListener("click", handlePause);
         resumeButton.removeEventListener("click", handleResume);
+        restartGameButton.removeEventListener("click", handleGameRestart);
       };
     }
   }, []);
@@ -288,7 +329,8 @@ export function RaceScene() {
  */
       spawnCoinOne();
       spawnCoinTwo();
-      setIsHeadStart(true);
+     // setIsHeadStart(true);
+      isHeadStartRef.current = true
     }, 4000);
 
     return () => clearTimeout(timer);
@@ -381,17 +423,13 @@ export function RaceScene() {
         move(state.camera, "right");
       }
     };
-    if (isGamePausedRef.current) {
+    if (isGamePausedRef.current || isGameOverRef.current) {
       state.clock.stop();
     } else {
       state.clock.start();
     }
 
-    if (isGameOverRef.current) {
-      state.clock.stop();
-    } else {
-      state.clock.start();
-    }
+    /* */
 
     if (!isGamePausedRef.current && !isGameOverRef.current ) {
       scores += Math.round(speed * delta + 1);
@@ -416,7 +454,7 @@ export function RaceScene() {
       playerBoxCollider.setFromObject(pickupTruckRef.current);
     }
 
-    if (isHeadStart) {
+    if (isHeadStartRef.current) {
         moveActiveObstacleOne(delta);
       moveActiveObstacleTwo(delta);
       detectCollisionWithObstacleOne();
@@ -426,7 +464,7 @@ export function RaceScene() {
       detectCollisionWithCoinOne();
       detectCollisionWithCoinTwo();
     }
-
+    
     // moveVisibleObstacles(delta);
     // hideObstacles();
     //spawnObstacles();

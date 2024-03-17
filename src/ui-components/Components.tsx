@@ -105,3 +105,37 @@ export const GameOverModal = () => {
     </>
   );
 };
+
+
+export const CarSelectionMenu = () => {
+  return (
+    <>
+    <section className="car-selection-container">
+        <section className="car-selection-buttons">
+ 
+      <Button name={"Prev"}  id="prevBtn" />
+          <h2 className="car-name"></h2>
+          <Button name={"Next"}  id="nextBtn" />
+        </section>
+        <button className="button" id="car-price-button">
+          <span id="character-price-text"> 0</span>
+    </button>
+        <button className="button" id="selectCarBtn">
+          <span id="select-button-text"> Select </span>
+        </button>
+      </section>
+    </>
+  )
+}
+
+export const HomeMenu = () => {
+  return (
+    <>
+    <div className="home-menu">
+        <button className="button">
+          <span><i className="fa-solid fa-home"></i></span>Back
+        </button>
+      </div>
+    </>
+  )
+}

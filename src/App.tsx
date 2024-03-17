@@ -1,7 +1,8 @@
 
 
-import CarRaceScene from "./scenes/race";
-import MainMenuScene from "./scenes/mainMenuScene";
+import CarRaceScene from "./scenes/Race";
+import MainMenuScene from "./scenes/MainMenu";
+import CarSelectionScene from "./scenes/CarSelection";
 
 
 
@@ -11,7 +12,7 @@ function App() {
     <>
     
         
-      <MainMenuScene />
+      <CarSelectionScene />
       
     </>
   );

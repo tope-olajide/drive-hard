@@ -185,3 +185,48 @@ font-size: 16px;
   display: flex;
   flex-wrap: wrap;
 }
+
+.car-selection-container{
+  flex-direction: column;
+  position: absolute;
+  bottom: 0;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  z-index: 2;
+  display: flex;
+}
+
+
+.car-selection-buttons {
+  display: flex;
+  
+  bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+
+}
+.car-selection-buttons h2{
+  color:#fff;
+  margin: 0 20px;
+  display: block;
+  padding:10px 20px;
+  background-color: #0079d08a;
+}
+
+#selectCarBtn{
+  display: none;
+}
+#carPriceBtn {
+  display: block;
+}
+
+.home-menu{
+  right:0;
+  position: absolute;
+  margin: 20px 10px;
+  display: block;
+  z-index: 2;
+}

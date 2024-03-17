@@ -277,7 +277,6 @@ export function RaceScene() {
     isHeadStartRef.current = false;
     setRestartGame();
 
-    console.log("ffmdm");
     for (let i = 0; i < obstacleRefs.length; i += 1) {
       if (obstacleRefs[i].current!.visible) {
         obstacleRefs[i].current!.visible = false;

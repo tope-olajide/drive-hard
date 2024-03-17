@@ -3,7 +3,6 @@ import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js'
 
 export function SkyBox() {
     const fbx = useLoader(FBXLoader, './assets/Poimandres.fbx')
-    
     return <primitive object={fbx} />
 }
   
@@ -15,7 +14,6 @@ export const Taxi = () => {
     </>
   );
 };
-
 
 
 export const Bus = () => {
@@ -70,6 +68,15 @@ export const Ambulance = () => {
 
 export const Coin = () => {
   const mesh = useLoader(FBXLoader, "./assets/Coin.fbx");
+  return (
+    <>
+      <primitive object={mesh.clone()} />
+    </>
+  );
+}
+
+export const Sporty = () => {
+  const mesh = useLoader(FBXLoader, "./assets/Sporty.fbx");
   return (
     <>
       <primitive object={mesh.clone()} />

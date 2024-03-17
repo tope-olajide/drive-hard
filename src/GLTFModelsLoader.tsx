@@ -34,3 +34,32 @@ export const PickupTruck = () => {
   );
 };
 
+export const Offroad = () => {
+  const pickup = useLoader(GLTFLoader, "./assets/Offroad.glb");
+  return (
+    <>
+      <primitive object={pickup.scene} />
+    </>
+  );
+};
+
+
+
+export const SUV = () => {
+  const pickup = useLoader(GLTFLoader, "./assets/SUV.glb");
+  return (
+    <>
+      <primitive object={pickup.scene} />
+    </>
+  );
+};
+
+export const Ferrari = () => {
+  const pickup = useLoader(GLTFLoader, "./assets/Ferrari.glb");
+  return (
+    <>
+      <primitive object={pickup.scene} />
+    </>
+  );
+};
+

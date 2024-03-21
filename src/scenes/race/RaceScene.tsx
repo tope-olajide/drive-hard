@@ -52,6 +52,7 @@ export function RaceScene() {
     isGameOverRef,
     setGameOver,
     setRestartGame,
+    switchToMainMenuScene
   } = useGlobalState();
   const [roadSizeOnZAxis, setRoadSizeOnZAxis] = useState(0);
   const mainRoadRef = useRef<Mesh>(null);
@@ -205,6 +206,7 @@ export function RaceScene() {
       }
     }
   };
+
   const detectCollisionWithObstacleTwo = () => {
     if (activeObstacleTwo.current) {
       for (let i = 0; i < activeObstacleTwo.current!.children.length; i += 1) {
@@ -291,31 +293,34 @@ export function RaceScene() {
     }
 
     const timer = setTimeout(() => {
-      /*  spawnObstacleOne();
-      spawnObstacleTwo();
- */
       spawnCoinOne();
       spawnCoinTwo();
-      // setIsHeadStart(true);
       isHeadStartRef.current = true;
       clearTimeout(timer);
     }, 4000);
   };
 
+  
   useEffect(() => {
     const pauseButton = document.getElementById("pauseGameButton");
     const resumeButton = document.getElementById("resumeGameButton");
     const restartGameButton = document.getElementById("restartGameButton");
+    const quitGameButton = document.getElementById("quitGameButton");
+    const quitGameButton2 = document.getElementById("quitGameButton2");
 
-    if (pauseButton && resumeButton && restartGameButton) {
+    if (pauseButton && resumeButton && restartGameButton && quitGameButton && quitGameButton2) {
       pauseButton.addEventListener("click", handlePause);
       resumeButton.addEventListener("click", handleResume);
       restartGameButton.addEventListener("click", handleGameRestart);
+      quitGameButton.addEventListener("click", switchToMainMenuScene);
+      quitGameButton2.addEventListener("click", switchToMainMenuScene);
 
       return () => {
         pauseButton.removeEventListener("click", handlePause);
         resumeButton.removeEventListener("click", handleResume);
         restartGameButton.removeEventListener("click", handleGameRestart);
+        quitGameButton.removeEventListener("click", switchToMainMenuScene);
+        quitGameButton2.removeEventListener("click", switchToMainMenuScene);
       };
     }
   }, []);

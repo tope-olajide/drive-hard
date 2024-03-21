@@ -5,6 +5,9 @@ html, body {
   width: 100vw;
   font-family: lato, sans-serif;
 }
+body{
+  background: #4F2A87 url("./assets/bg.png") no-repeat fixed center;
+}
 
 #app {
   width: 100vw;

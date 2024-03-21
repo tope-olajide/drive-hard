@@ -68,8 +68,6 @@ const CarSelection = () => {
     mainRoadTwoRef.current?.scale.set(0.13, 0.13, 0.13);
     mainRoadTwoRef.current?.position.set(0, -0.4, -15);
 
-    /*  pickupTruckRef.current?.scale.set(0.09, 0.09, 0.09); 
-    pickupTruckRef.current?.position.set(0, -0.33, 3.8);*/
   }, []);
 
   const nextCar = () => {

@@ -1,5 +1,5 @@
 
-import React, { createContext, ReactNode, useContext, useRef, MutableRefObject } from "react";
+import React, { createContext, ReactNode, useContext, useRef, MutableRefObject, useState } from "react";
 
 
 interface GameContextType {
@@ -7,12 +7,17 @@ interface GameContextType {
   isGameOverRef: MutableRefObject<boolean>;
   modalRef: MutableRefObject<HTMLDivElement>;
   gameOverModalRef: MutableRefObject<HTMLDivElement>;
+  currentSceneRef: MutableRefObject<"MainMenu"|"Racing"|"CarSelection">;
   coins: MutableRefObject<number>;
+  currentScene: "MainMenu"|"Racing"|"CarSelection"
   pauseGame: () => void;
   resumeGame: () => void;
   increaseCoins: () => void;
   setRestartGame: () => void;
   setGameOver: () => void;
+  switchToMainMenuScene: () => void;
+  switchToRacingScene: () => void;
+  switchToCarSelectionScene: () => void;
 }
 
 const GlobalStateContext = createContext<GameContextType | undefined>(undefined);
@@ -35,6 +40,9 @@ export const GlobalStateProvider: React.FC<GlobalStateProviderProps> = ({
 }) => {
   const isGamePausedRef = useRef<boolean>(false);
   const isGameOverRef = useRef<boolean>(false);
+  let currentSceneRef = useRef<"MainMenu"|"Racing"|"CarSelection">("MainMenu");
+  //  currentSceneRef.current = "MainMenu";
+  const [currentScene, setCurrentScene] = useState<"MainMenu" | "Racing" | "CarSelection">("MainMenu");
   const modalRef = useRef();
   const gameOverModalRef = useRef();
   let coins = useRef(0);
@@ -70,6 +78,21 @@ export const GlobalStateProvider: React.FC<GlobalStateProviderProps> = ({
     console.log(coins)
   }
 
+  const switchToMainMenuScene = () => {
+    setCurrentScene("MainMenu") 
+    
+  }
+
+  const switchToRacingScene = () => {
+   
+    setCurrentScene("Racing") 
+  }
+  const switchToCarSelectionScene = () => {
+   
+    setCurrentScene("CarSelection")
+    
+  }
+
   const value: GameContextType = {
     isGamePausedRef,
     pauseGame,
@@ -80,7 +103,12 @@ export const GlobalStateProvider: React.FC<GlobalStateProviderProps> = ({
     gameOverModalRef,
     setRestartGame,
     setGameOver,
-    isGameOverRef
+    isGameOverRef,
+    switchToMainMenuScene,
+    switchToRacingScene,
+    switchToCarSelectionScene,
+    currentSceneRef,
+currentScene
   };
 
   return (

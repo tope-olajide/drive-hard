@@ -272,7 +272,7 @@ export function RaceScene() {
   const handleGameRestart = () => {
     activeObstacleOne.current!.position.z = -14;
     activeObstacleTwo.current!.position.z =
-      activeObstacleOne?.current!.position.z - 14;
+      activeObstacleOne?.current!.position.z - 20;
     activeObstacleOne.current!.visible = false;
     activeObstacleTwo.current!.visible = false;
     //  setIsHeadStart(false);
@@ -329,13 +329,15 @@ export function RaceScene() {
     // playerBoxCollider = new Box3(new Vector3(), new Vector3());
     obstacleOneBoxCollider = new Box3(new Vector3(), new Vector3());
     obstacleTwoBoxCollider = new Box3(new Vector3(), new Vector3());
+    isGameOverRef.current = false;
+    isGamePausedRef.current = false
     const timer = setTimeout(() => {
-      /*  spawnObstacleOne();
+      spawnObstacleOne();
       spawnObstacleTwo();
- */
+ 
       spawnCoinOne();
       spawnCoinTwo();
-      // setIsHeadStart(true);
+       
       isHeadStartRef.current = true;
     }, 4000);
 

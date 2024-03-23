@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 import { Mesh } from "three";
 import { useGlobalState } from "../../store/GlobalStore";
 const MainMenu = () => {
-  const {switchToRacingScene} =  useGlobalState()
+  const {switchToRacingScene, switchToCarSelectionScene} =  useGlobalState()
   const mainRoadRef = useRef<Mesh>(null);
   const mainRoadTwoRef = useRef<Mesh>(null);
   const pickupTruckRef = useRef<Mesh>(null);
@@ -17,15 +17,18 @@ const MainMenu = () => {
   }, []);
 
   useEffect(() => {
-    const playButton = document.getElementById("playButton");
-   // const previousButton = document.getElementById("prevBtn");
-
-    if (playButton) {
+   const playButton = document.getElementById("playButton");
+   const marketButton = document.getElementById("marketButton");
+   
+    
+   
+    if (playButton && marketButton ){
       playButton.addEventListener("click", switchToRacingScene);
+      marketButton.addEventListener("click", switchToCarSelectionScene);
 
       return () => {
         playButton.removeEventListener("click", switchToRacingScene);
-        
+        marketButton.removeEventListener("click", switchToCarSelectionScene);
       };
     }
   }, []);

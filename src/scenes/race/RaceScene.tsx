@@ -334,7 +334,7 @@ export function RaceScene() {
     const timer = setTimeout(() => {
       spawnObstacleOne();
       spawnObstacleTwo();
- 
+      
       spawnCoinOne();
       spawnCoinTwo();
        

@@ -13,7 +13,7 @@ const MainMenuScene = () => {
         <TotalCoinsAndScoresBoard />
         <div className="main-menu-container">
           <Button name={"Play"} id="playButton" />
-          <Button name={"Market"} />
+          <Button name={"Market"} id="marketButton" />
           <Button name={"Tournament"} />
           <Button name={"About"} />
         </div>

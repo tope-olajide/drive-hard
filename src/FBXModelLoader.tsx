@@ -75,11 +75,11 @@ export const Coin = () => {
   );
 }
 
-export const Sporty = () => {
+/* export const Sporty = () => {
   const mesh = useLoader(FBXLoader, "./assets/Sporty.fbx");
   return (
     <>
       <primitive object={mesh.clone()} />
     </>
   );
-}
+} */

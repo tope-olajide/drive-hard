@@ -1,7 +1,5 @@
 import { Camera, useFrame } from "@react-three/fiber";
 import {
-  Ref,
-  RefObject,
   createElement,
   useEffect,
   useRef,
@@ -10,11 +8,8 @@ import {
 import { MainRoad, MainRoadTwo, PickupTruck } from "../../GLTFModelsLoader";
 import {
   Box3,
-  BufferGeometry,
   Group,
-  Material,
   Mesh,
-  NormalBufferAttributes,
   Object3D,
   Object3DEventMap,
   Vector3,
@@ -44,16 +39,45 @@ import { useGlobalState } from "../../store/GlobalStore";
 
 export function RaceScene() {
   const {
-    pauseGame,
-    resumeGame,
-    isGamePausedRef,
-    coins,
-    increaseCoins,
-    isGameOverRef,
-    setGameOver,
-    setRestartGame,
     switchToMainMenuScene
   } = useGlobalState();
+
+  const isGamePausedRef = useRef<boolean>(false);
+  let coins = useRef(0);
+
+  const isGameOverRef = useRef<boolean>(false);
+  const increaseCoins = () => {
+    coins.current += 1
+    console.log(coins)
+  }
+
+  const pauseGame = () => {
+    isGamePausedRef.current = true;
+    document.getElementById("gameOverModalContainer")!.style.display = "block";
+  };
+
+  const resumeGame = () => {
+    isGamePausedRef.current = false;
+    document.getElementById("gameOverModalContainer")!.style.display = "none";
+  };
+
+  const setGameOver = () => {
+    isGameOverRef.current = true;
+    const gameOverModalContainer = document.getElementById("gameOverModalContainer");
+    if (gameOverModalContainer) {
+      gameOverModalContainer.style.display = 'block'
+    }
+  }
+
+  const setRestartGame = () => {
+    isGameOverRef.current = false;
+    const gameOverModalContainer = document.getElementById("gameOverModalContainer");
+    if (gameOverModalContainer) {
+      gameOverModalContainer.style.display = 'none'
+    }
+  }
+
+
   const [roadSizeOnZAxis, setRoadSizeOnZAxis] = useState(0);
   const mainRoadRef = useRef<Mesh>(null);
   const mainRoadTwoRef = useRef<Mesh>(null);

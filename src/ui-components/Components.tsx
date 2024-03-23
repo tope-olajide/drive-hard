@@ -1,4 +1,4 @@
-import { MouseEventHandler } from "react";
+import { MouseEventHandler, useEffect, useState } from "react";
 import { useGlobalState } from "../store/GlobalStore";
 
 const Button = ({
@@ -67,15 +67,25 @@ export const CurrentCoinsAndScoresBoard = () => {
 };
 
 export const TotalCoinsAndScoresBoard = () => {
+  const [highScore, setHighScore] = useState("0")
+  const [totalCoins, setTotalCoins] = useState("0")
+  useEffect(() => {
+    const savedScore = localStorage.getItem("high-score")||"0"
+    setHighScore(savedScore)
+
+    const savedCoins = localStorage.getItem("total-coins")||"0"
+    setTotalCoins(savedCoins)
+  }, []);
+  
   return (
     <>
       <section className="current-coins-scores-container">
         
         <h3>
-         High Scores:<span className="scores-count">0</span>
+          High Scores:<span className="scores-count">{highScore}</span>
         </h3>
         <h3>
-          Total Coins: <span className="coins-count">0</span>
+          Total Coins: <span className="coins-count">{totalCoins}</span>
         </h3>
       </section>
     </>

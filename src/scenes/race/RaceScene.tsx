@@ -48,12 +48,13 @@ export function RaceScene() {
   const isGameOverRef = useRef<boolean>(false);
   const increaseCoins = () => {
     coins.current += 1
-    console.log(coins)
   }
 
   const pauseGame = () => {
     isGamePausedRef.current = true;
     document.getElementById("gameOverModalContainer")!.style.display = "block";
+    saveCoins();
+    saveHighScore();
   };
 
   const resumeGame = () => {
@@ -67,6 +68,8 @@ export function RaceScene() {
     if (gameOverModalContainer) {
       gameOverModalContainer.style.display = 'block'
     }
+    saveCoins();
+    saveHighScore();
   }
 
   const setRestartGame = () => {
@@ -216,6 +219,7 @@ export function RaceScene() {
 
   const gameOver = () => {
     setGameOver();
+    
   };
 
   const detectCollisionWithObstacleOne = () => {
@@ -285,6 +289,18 @@ export function RaceScene() {
       }
     }
   };
+
+  const saveCoins =() => {
+    const prevTotalCoins = localStorage.getItem("total-coins") || 0;
+    const totalCoins = Number(prevTotalCoins) + coins.current;
+    localStorage.setItem("total-coins", totalCoins.toString());
+  }
+  const saveHighScore = () => {
+    const highScore = localStorage.getItem("high-score") || 0;
+    if (Number(scores) > Number(highScore)) {
+      localStorage.setItem("high-score", scores.toString());
+    }
+  }
 
   const handlePause = () => {
     pauseGame();

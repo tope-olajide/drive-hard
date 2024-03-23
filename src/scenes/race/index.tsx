@@ -1,19 +1,19 @@
-import { Canvas } from "@react-three/fiber";
+
 import { RaceScene } from "./RaceScene";
 import { SkyBox } from "../../GLTFModelsLoader";
 import {CurrentCoinsAndScoresBoard, GameOverModal, PauseGameButton, PauseModal} from "../../ui-components/Components";
-import { useGlobalState } from "../../store/GlobalStore";
+
+import SharedCanvasContainer from "../../SharedCanvasCointainer";
 
 function RaceSceneHome() {
-  const { modalRef, gameOverModalRef } = useGlobalState();
 
   return (
     <>
-      <div style={{ display: "none" }} ref={modalRef}>
+      <div style={{ display: "none" }}>
         <PauseModal />
       </div>
 
-      <div style={{ display: "none" }} id="gameOverModalContainer" ref={gameOverModalRef}>
+      <div style={{ display: "none" }} id="gameOverModalContainer">
         <GameOverModal />
       </div>
       <div>
@@ -21,18 +21,13 @@ function RaceSceneHome() {
       </div>
       <PauseGameButton />
       <div id="app">
-        <Canvas>
-          <ambientLight intensity={4} color="blue" />
-          <directionalLight
-            intensity={6}
-            color="white"
-            position={[0, 0.4, 1]}
-          />
+        <SharedCanvasContainer>
+         
           <mesh>
             <SkyBox />
           </mesh>
           <RaceScene />
-        </Canvas>
+        </SharedCanvasContainer>
       </div>
     </>
   );

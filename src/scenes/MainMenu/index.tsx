@@ -1,10 +1,11 @@
-import { Canvas } from "@react-three/fiber";
+
 import { SkyBox } from "../../GLTFModelsLoader";
 
 import Button, {
   TotalCoinsAndScoresBoard,
 } from "../../ui-components/Components";
 import MainMenu from "./MainMenu";
+import SharedCanvasContainer from "../../SharedCanvasCointainer";
 
 const MainMenuScene = () => {
   return ( 
@@ -17,18 +18,13 @@ const MainMenuScene = () => {
           <Button name={"Tournament"} />
           <Button name={"About"} />
         </div>
-        <Canvas>
-          <ambientLight intensity={4} color="blue" />
-          <directionalLight
-            intensity={5}
-            color="white"
-            position={[0, 0.4, 1]}
-          />
+        <SharedCanvasContainer>
+          
           <mesh>
             <SkyBox />
           </mesh>
           <MainMenu />
-        </Canvas>
+        </SharedCanvasContainer>
       </div>
     </>
   );

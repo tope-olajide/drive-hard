@@ -33,7 +33,7 @@ export const PauseModal = () => {
         <div className="modal-body">
           <div style={{ display: "flex", flexDirection: "column" }}>
             <Button id="resumeGameButton" name="Resume" />
-            <Button name="Quit" />
+            <Button name="Quit" id="quitGameButton" />
           </div>
         </div>
 
@@ -96,7 +96,7 @@ export const GameOverModal = () => {
         <div className="modal-body">
           <div style={{ display: "flex", flexDirection: "column" }}>
             <Button id="restartGameButton" name="Restart Game" />
-            <Button name="Quit" />
+            <Button name="Quit" id="quitGameButton2" />
           </div>
         </div>
 
@@ -132,7 +132,7 @@ export const HomeMenu = () => {
   return (
     <>
     <div className="home-menu">
-        <button className="button">
+        <button className="button" id="backButton">
           <span><i className="fa-solid fa-home"></i></span>Back
         </button>
       </div>

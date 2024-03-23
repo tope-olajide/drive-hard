@@ -1,20 +1,15 @@
 import { Canvas } from "@react-three/fiber";
-import {
-
-  SkyBox,
-} from "../../GLTFModelsLoader";
-
+import { SkyBox } from "../../GLTFModelsLoader";
 
 import CarSelection from "./CarSelection";
-import { CarSelectionMenu, HomeMenu, TotalCoinsAndScoresBoard } from "../../ui-components/Components";
-
+import { CarSelectionMenu, HomeMenu } from "../../ui-components/Components";
 
 const CarSelectionScene = () => {
-
   return (
-      <div id="app">
-          <div><CarSelectionMenu /></div>
-      <TotalCoinsAndScoresBoard />
+    <div id="app">
+      <div>
+        <CarSelectionMenu />
+      </div>
       <HomeMenu />
       <Canvas>
         <ambientLight intensity={4} color="blue" />

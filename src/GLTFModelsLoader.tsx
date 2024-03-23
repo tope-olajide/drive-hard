@@ -45,6 +45,8 @@ export const Offroad = () => {
 
 
 
+
+
 export const SUV = () => {
   const pickup = useLoader(GLTFLoader, "./assets/SUV.glb");
   return (

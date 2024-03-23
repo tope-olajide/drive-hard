@@ -7,18 +7,21 @@ import {
   Offroad,
   SUV,
 } from "../../GLTFModelsLoader";
-import { Sporty } from "../../FBXModelLoader";
 import { useEffect, useRef } from "react";
 import { Mesh } from "three";
+import { useGlobalState } from "../../store/GlobalStore";
 
 const CarSelection = () => {
+
+  const { switchToMainMenuScene } = useGlobalState()
+  
+  
   const mainRoadRef = useRef<Mesh>(null);
   const mainRoadTwoRef = useRef<Mesh>(null);
   const pickupTruckRef = useRef<Mesh>(null);
   const SUVRef = useRef<Mesh>(null);
   const offroadRef = useRef<Mesh>(null);
   const ferrariRef = useRef<Mesh>(null);
-  const sportyRef = useRef<Mesh>(null);
 
   const allCars = [
     {
@@ -42,13 +45,7 @@ const CarSelection = () => {
       isLocked: true,
       isActive: false,
     },
-    {
-      carModel: sportyRef,
-      name: "Sporty",
-      price: 2000,
-      isLocked: true,
-      isActive: false,
-    },
+  
     {
       carModel: ferrariRef,
       name: "Ferrari",
@@ -68,9 +65,20 @@ const CarSelection = () => {
     mainRoadTwoRef.current?.scale.set(0.13, 0.13, 0.13);
     mainRoadTwoRef.current?.position.set(0, -0.4, -15);
 
-    /*  pickupTruckRef.current?.scale.set(0.09, 0.09, 0.09); 
-    pickupTruckRef.current?.position.set(0, -0.33, 3.8);*/
   }, []);
+
+  useEffect(() => {
+    const homeButton = document.getElementById("backButton");
+ 
+     if (homeButton ){
+      homeButton.addEventListener("click", switchToMainMenuScene);
+ 
+       return () => {
+        homeButton.removeEventListener("click", switchToMainMenuScene);
+         
+       };
+     }
+   }, []);
 
   const nextCar = () => {
     if (currentCarIndex + 1 < allCars.length) {
@@ -119,7 +127,6 @@ const CarSelection = () => {
           document.getElementById("select-button-text") as HTMLElement
         ).innerText = "Select";
       }
-
     }
   };
 
@@ -187,6 +194,7 @@ const CarSelection = () => {
       };
     }
   }, []);
+
   useEffect(() => {
     if (allCars[currentCarIndex].isLocked) {
       (
@@ -245,14 +253,7 @@ const CarSelection = () => {
       <mesh ref={pickupTruckRef} position={[0, -0.33, 3.8]} scale={0.09}>
         <PickupTruck />
       </mesh>
-      <mesh
-        ref={sportyRef}
-        position={[0, -0.33, 3.8]}
-        scale={0.0006}
-        visible={false}
-      >
-        <Sporty />
-      </mesh>
+     
       <mesh
         ref={SUVRef}
         position={[0, -0.33, 3.8]}

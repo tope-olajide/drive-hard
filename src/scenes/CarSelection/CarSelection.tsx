@@ -22,43 +22,20 @@ const CarSelection = () => {
   const SUVRef = useRef<Mesh>(null);
   const offroadRef = useRef<Mesh>(null);
   const ferrariRef = useRef<Mesh>(null);
-
-  const allCars = [
-    {
-      carModel: pickupTruckRef,
-      name: "Pickup",
-      price: 0,
-      isLocked: false,
-      isActive: true,
-    },
-    {
-      carModel: SUVRef,
-      name: "SUV",
-      price: 200,
-      isLocked: true,
-      isActive: false,
-    },
-    {
-      carModel: offroadRef,
-      name: "Offroad",
-      price: 500,
-      isLocked: true,
-      isActive: false,
-    },
-  
-    {
-      carModel: ferrariRef,
-      name: "Ferrari",
-      price: 5000,
-      isLocked: true,
-      isActive: false,
-    },
-  ];
+   const allCarsModels = [
+      pickupTruckRef,
+      SUVRef,
+      offroadRef,
+      ferrariRef
+   ]
+ 
   let currentCarIndex = 0;
-  let currentCar = allCars[currentCarIndex].carModel;
+  let savedGameCars = JSON.parse(localStorage.getItem("savedCarData")!);
+  let currentCar = allCarsModels[currentCarIndex];
   (document.querySelector(".car-name") as HTMLElement).innerHTML =
-    allCars[currentCarIndex].name;
+    savedGameCars[currentCarIndex].name;
 
+ 
   useEffect(() => {
     mainRoadRef.current?.scale.set(0.13, 0.13, 0.13);
     mainRoadRef.current?.position.set(0, -0.4, 0);
@@ -69,27 +46,33 @@ const CarSelection = () => {
 
   useEffect(() => {
     const homeButton = document.getElementById("backButton");
+    const priceButton = document.getElementById("car-price-button");
+    const selectCarButton = document.getElementById("selectCarBtn");
  
-     if (homeButton ){
+     if (homeButton && priceButton && selectCarButton ){
       homeButton.addEventListener("click", switchToMainMenuScene);
+      priceButton.addEventListener("click", purchaseCar);
+      selectCarButton.addEventListener("click", activateCar);
  
        return () => {
         homeButton.removeEventListener("click", switchToMainMenuScene);
+        priceButton.removeEventListener("click", purchaseCar);
+      selectCarButton.removeEventListener("click", activateCar);
          
        };
      }
    }, []);
 
   const nextCar = () => {
-    if (currentCarIndex + 1 < allCars.length) {
+    if (currentCarIndex + 1 < savedGameCars.length) {
       currentCarIndex += 1;
       console.log(currentCarIndex);
       currentCar.current!.visible = false;
-      currentCar = allCars[currentCarIndex].carModel;
+      currentCar = allCarsModels[currentCarIndex];
       currentCar.current!.visible = true;
       (document.querySelector(".car-name") as HTMLElement).innerHTML =
-        allCars[currentCarIndex].name;
-        if (allCars[currentCarIndex].isLocked) {
+        savedGameCars[currentCarIndex].name;
+        if (savedGameCars[currentCarIndex].isLocked) {
           (
             document.getElementById("selectCarBtn") as HTMLElement
           ).style.display = "none";
@@ -98,10 +81,10 @@ const CarSelection = () => {
           ).style.display = "block";
           (
             document.getElementById("character-price-text") as HTMLElement
-          ).innerHTML = `${allCars[currentCarIndex].price}`;
+          ).innerHTML = `${savedGameCars[currentCarIndex].price}`;
       }
       
-      if (allCars[currentCarIndex].isActive) {
+      if (savedGameCars[currentCarIndex].isActive) {
         (
           document.getElementById("selectCarBtn") as HTMLElement
         ).style.display = "block";
@@ -114,8 +97,8 @@ const CarSelection = () => {
       }
 
       if (
-        !allCars[currentCarIndex].isLocked &&
-        !allCars[currentCarIndex].isActive
+        !savedGameCars[currentCarIndex].isLocked &&
+        !savedGameCars[currentCarIndex].isActive
       ) {
         (
           document.getElementById("selectCarBtn") as HTMLElement
@@ -135,11 +118,11 @@ const CarSelection = () => {
       currentCarIndex -= 1;
       console.log(currentCarIndex);
       currentCar.current!.visible = false;
-      currentCar = allCars[currentCarIndex].carModel;
+      currentCar = allCarsModels[currentCarIndex];
       currentCar.current!.visible = true;
       (document.querySelector(".car-name") as HTMLElement).innerHTML =
-        allCars[currentCarIndex].name;
-        if (allCars[currentCarIndex].isLocked) {
+        savedGameCars[currentCarIndex].name;
+        if (savedGameCars[currentCarIndex].isLocked) {
           (
             document.getElementById("selectCarBtn") as HTMLElement
           ).style.display = "none";
@@ -148,10 +131,10 @@ const CarSelection = () => {
           ).style.display = "block";
           (
             document.getElementById("character-price-text") as HTMLElement
-          ).innerHTML = `${allCars[currentCarIndex].price}`;
+          ).innerHTML = `${savedGameCars[currentCarIndex].price}`;
       }
       
-      if (allCars[currentCarIndex].isActive) {
+      if (savedGameCars[currentCarIndex].isActive) {
         (
           document.getElementById("selectCarBtn") as HTMLElement
         ).style.display = "block";
@@ -164,8 +147,8 @@ const CarSelection = () => {
       }
 
       if (
-        !allCars[currentCarIndex].isLocked &&
-        !allCars[currentCarIndex].isActive
+        !savedGameCars[currentCarIndex].isLocked &&
+        !savedGameCars[currentCarIndex].isActive
       ) {
         (
           document.getElementById("selectCarBtn") as HTMLElement
@@ -179,6 +162,49 @@ const CarSelection = () => {
       }
     }
   };
+
+  const activateCar = () => {
+    const savedCarData = JSON.parse(
+      localStorage.getItem("savedCarData")!
+    );
+    console.log(savedCarData)
+    const updatedCarData = savedCarData.map((playerInfo, index: number) => {
+      if (currentCarIndex === index) {
+        return {
+          ...playerInfo,
+          isActive: true,
+          price: 0,
+          isLocked: false,
+        };
+      }
+      return { ...playerInfo, isActive: false };
+    });
+    localStorage.setItem("savedCarData", JSON.stringify(updatedCarData));
+    savedGameCars = updatedCarData;
+    
+    (
+      document.getElementById("selectCarBtn") as HTMLElement
+    ).style.display = "block";
+    (
+      document.getElementById("car-price-button") as HTMLElement
+    ).style.display = "none";
+    (
+      document.getElementById("select-button-text") as HTMLElement
+    ).innerHTML = "Selected";
+  }
+
+  const purchaseCar = () => {
+    const totalCoins = Number(localStorage.getItem("total-coins"));
+    if (totalCoins >= savedGameCars[currentCarIndex].price) {
+      const remainingCoins =
+        totalCoins - Number(savedGameCars[currentCarIndex].price);
+      localStorage.setItem("total-coins", remainingCoins.toString()!);
+      activateCar();
+      (
+      document.querySelector(".coins-count") as HTMLElement
+    ).innerHTML = `${remainingCoins}`;
+    }
+  }
 
   useEffect(() => {
     const nextButton = document.getElementById("nextBtn");
@@ -196,7 +222,7 @@ const CarSelection = () => {
   }, []);
 
   useEffect(() => {
-    if (allCars[currentCarIndex].isLocked) {
+    if (savedGameCars[currentCarIndex].isLocked) {
       (
         document.getElementById("selectCarBtn") as HTMLElement
       ).style.display = "none";
@@ -205,10 +231,10 @@ const CarSelection = () => {
       ).style.display = "block";
       (
         document.getElementById("character-price-text") as HTMLElement
-      ).innerHTML = `${allCars[currentCarIndex].price}`;
+      ).innerHTML = `${savedGameCars[currentCarIndex].price}`;
   }
   
-  if (allCars[currentCarIndex].isActive) {
+  if (savedGameCars[currentCarIndex].isActive) {
     (
       document.getElementById("selectCarBtn") as HTMLElement
     ).style.display = "block";
@@ -219,10 +245,9 @@ const CarSelection = () => {
       document.getElementById("select-button-text") as HTMLElement
     ).innerHTML = "Selected";
   }
-
   if (
-    !allCars[currentCarIndex].isLocked &&
-    !allCars[currentCarIndex].isActive
+    !savedGameCars[currentCarIndex].isLocked &&
+    !savedGameCars[currentCarIndex].isActive
   ) {
     (
       document.getElementById("selectCarBtn") as HTMLElement

@@ -1,19 +1,14 @@
 import { Camera, useFrame } from "@react-three/fiber";
+import { createElement, useEffect, useRef, useState } from "react";
 import {
-  createElement,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { MainRoad, MainRoadTwo, PickupTruck } from "../../GLTFModelsLoader";
-import {
-  Box3,
-  Group,
-  Mesh,
-  Object3D,
-  Object3DEventMap,
-  Vector3,
-} from "three";
+  Ferrari,
+  MainRoad,
+  MainRoadTwo,
+  Offroad,
+  PickupTruck,
+  SUV,
+} from "../../GLTFModelsLoader";
+import { Box3, Group, Mesh, Object3D, Object3DEventMap, Vector3 } from "three";
 import TWEEN, { Tween } from "@tweenjs/tween.js";
 import {
   Obstacle1,
@@ -38,17 +33,15 @@ import {
 import { useGlobalState } from "../../store/GlobalStore";
 
 export function RaceScene() {
-  const {
-    switchToMainMenuScene
-  } = useGlobalState();
+  const { switchToMainMenuScene } = useGlobalState();
 
   const isGamePausedRef = useRef<boolean>(false);
   let coins = useRef(0);
 
   const isGameOverRef = useRef<boolean>(false);
   const increaseCoins = () => {
-    coins.current += 1
-  }
+    coins.current += 1;
+  };
 
   const pauseGame = () => {
     isGamePausedRef.current = true;
@@ -64,30 +57,54 @@ export function RaceScene() {
 
   const setGameOver = () => {
     isGameOverRef.current = true;
-    const gameOverModalContainer = document.getElementById("gameOverModalContainer");
+    const gameOverModalContainer = document.getElementById(
+      "gameOverModalContainer"
+    );
     if (gameOverModalContainer) {
-      gameOverModalContainer.style.display = 'block'
-    }
+      gameOverModalContainer.style.display = "block";
+    }  
     saveCoins();
     saveHighScore();
-  }
+  };
 
   const setRestartGame = () => {
     isGameOverRef.current = false;
-    const gameOverModalContainer = document.getElementById("gameOverModalContainer");
+    const gameOverModalContainer = document.getElementById(
+      "gameOverModalContainer"
+    );
     if (gameOverModalContainer) {
-      gameOverModalContainer.style.display = 'none'
+      gameOverModalContainer.style.display = "none";
     }
-  }
-
-
-  const [roadSizeOnZAxis, setRoadSizeOnZAxis] = useState(0);
+  };
+let roadSizeOnZAxis = 0
+ // const [roadSizeOnZAxis, setRoadSizeOnZAxis] = useState(0);
   const mainRoadRef = useRef<Mesh>(null);
   const mainRoadTwoRef = useRef<Mesh>(null);
   const pickupTruckRef = useRef<Mesh>(null);
+  const SUVRef = useRef<Mesh>(null);
+  const offroadRef = useRef<Mesh>(null);
+  const ferrariRef = useRef<Mesh>(null);
+  const allCarsModels = [pickupTruckRef, SUVRef, offroadRef, ferrariRef];
+
+  // let playerCar = allCarsModels[0];
+
+  let savedGameCars;
+  let activatedCarIndex = 0;
 
   let tweenLeft: Tween<Vector3>;
   let tweenRight: Tween<Vector3>;
+
+  savedGameCars = JSON.parse(localStorage.getItem("savedCarData")!);
+  activatedCarIndex = savedGameCars.findIndex((car) => car.isActive === true);
+
+  let playerCar = allCarsModels[activatedCarIndex];
+
+  useEffect(() => {
+    playerCar.current!.visible = true;
+
+    tweenLeft = new TWEEN.Tween(playerCar.current!.position);
+    tweenRight = new TWEEN.Tween(playerCar.current!.position);
+  }, []);
 
   let activeObstacleOne = useRef<Group<Object3DEventMap>>(null);
   let activeObstacleTwo = useRef<Group<Object3DEventMap>>(null);
@@ -95,7 +112,11 @@ export function RaceScene() {
   let activeCoinOne = useRef<Group<Object3DEventMap>>(null);
   let activeCoinTwo = useRef<Group<Object3DEventMap>>(null);
 
+
+  
   let playerBoxCollider = new Box3(new Vector3(), new Vector3());
+  let modifiedPlayerBoxCollider = new Box3(new Vector3(), new Vector3());
+
 
   let obstacleOneBoxCollider = new Box3(new Vector3(), new Vector3());
   let obstacleTwoBoxCollider = new Box3(new Vector3(), new Vector3());
@@ -219,7 +240,6 @@ export function RaceScene() {
 
   const gameOver = () => {
     setGameOver();
-    
   };
 
   const detectCollisionWithObstacleOne = () => {
@@ -228,7 +248,7 @@ export function RaceScene() {
         obstacleOneBoxCollider.setFromObject(
           activeObstacleOne.current.children[i]
         );
-        if (playerBoxCollider.intersectsBox(obstacleOneBoxCollider)) {
+        if (modifiedPlayerBoxCollider.intersectsBox(obstacleOneBoxCollider)) {
           gameOver();
         }
       }
@@ -241,7 +261,7 @@ export function RaceScene() {
         obstacleTwoBoxCollider.setFromObject(
           activeObstacleTwo.current.children[i]
         );
-        if (playerBoxCollider.intersectsBox(obstacleTwoBoxCollider)) {
+        if (modifiedPlayerBoxCollider.intersectsBox(obstacleTwoBoxCollider)) {
           gameOver();
         }
       }
@@ -290,17 +310,17 @@ export function RaceScene() {
     }
   };
 
-  const saveCoins =() => {
+  const saveCoins = () => {
     const prevTotalCoins = localStorage.getItem("total-coins") || 0;
     const totalCoins = Number(prevTotalCoins) + coins.current;
     localStorage.setItem("total-coins", totalCoins.toString());
-  }
+  };
   const saveHighScore = () => {
     const highScore = localStorage.getItem("high-score") || 0;
     if (Number(scores) > Number(highScore)) {
       localStorage.setItem("high-score", scores.toString());
     }
-  }
+  };
 
   const handlePause = () => {
     pauseGame();
@@ -310,12 +330,12 @@ export function RaceScene() {
   };
 
   const handleGameRestart = () => {
-    activeObstacleOne.current!.position.z = -14;
-    activeObstacleTwo.current!.position.z =
-      activeObstacleOne?.current!.position.z - 20;
+
+
+    activeObstacleOne.current!.position.z = 20;
+    activeObstacleTwo.current!.position.z = 20
     activeObstacleOne.current!.visible = false;
     activeObstacleTwo.current!.visible = false;
-    //  setIsHeadStart(false);
     isHeadStartRef.current = false;
     setRestartGame();
 
@@ -340,7 +360,6 @@ export function RaceScene() {
     }, 4000);
   };
 
-  
   useEffect(() => {
     const pauseButton = document.getElementById("pauseGameButton");
     const resumeButton = document.getElementById("resumeGameButton");
@@ -348,7 +367,13 @@ export function RaceScene() {
     const quitGameButton = document.getElementById("quitGameButton");
     const quitGameButton2 = document.getElementById("quitGameButton2");
 
-    if (pauseButton && resumeButton && restartGameButton && quitGameButton && quitGameButton2) {
+    if (
+      pauseButton &&
+      resumeButton &&
+      restartGameButton &&
+      quitGameButton &&
+      quitGameButton2
+    ) {
       pauseButton.addEventListener("click", handlePause);
       resumeButton.addEventListener("click", handleResume);
       restartGameButton.addEventListener("click", handleGameRestart);
@@ -370,14 +395,14 @@ export function RaceScene() {
     obstacleOneBoxCollider = new Box3(new Vector3(), new Vector3());
     obstacleTwoBoxCollider = new Box3(new Vector3(), new Vector3());
     isGameOverRef.current = false;
-    isGamePausedRef.current = false
+    isGamePausedRef.current = false;
     const timer = setTimeout(() => {
-      spawnObstacleOne();
-      spawnObstacleTwo();
-      
+    //  spawnObstacleOne();
+     // spawnObstacleTwo();
+
       spawnCoinOne();
       spawnCoinTwo();
-       
+
       isHeadStartRef.current = true;
     }, 4000);
 
@@ -388,88 +413,109 @@ export function RaceScene() {
     mainRoadRef.current?.scale.set(0.13, 0.13, 0.13);
     mainRoadRef.current?.position.set(0, -0.4, 0);
     mainRoadTwoRef.current?.scale.set(0.13, 0.13, 0.13);
-    pickupTruckRef.current?.scale.set(0.07, 0.07, 0.07);
-    pickupTruckRef.current?.position.set(0.14, -0.33, 3.8);
 
     if (mainRoadRef.current && mainRoadTwoRef.current) {
       const mainRoadboundingBox = new Box3().setFromObject(mainRoadRef.current);
-      setRoadSizeOnZAxis(
-        mainRoadboundingBox.max.z - mainRoadboundingBox.min.z - 0.01
-      );
+      
+      roadSizeOnZAxis =  mainRoadboundingBox.max.z - mainRoadboundingBox.min.z - 0.01
+      
       mainRoadTwoRef.current.position.set(0, -0.4, -15);
     }
   }, []);
 
-  tweenLeft = new TWEEN.Tween(pickupTruckRef.current?.position);
-  tweenRight = new TWEEN.Tween(pickupTruckRef.current?.position);
-
-  const move = (camera: Camera, direction: "left" | "right") => {
-    const isLeft = direction === "left";
-    const position = pickupTruckRef.current!.position.x;
-    const limit = isLeft ? -0.46 : 0.44;
-    if (position !== limit) {
-      const tweenCamera = new Tween(camera.position)
-        .to({ x: camera.position.x + (isLeft ? -0.21 : 0.21) }, 200)
+  const moveLeft = (camera: Camera) => {
+    if (playerCar.current!.position.x !== -0.46) {
+      const tweenCameraLeft = new Tween(camera.position)
+        .to({ x: camera.position.x - 0.21 }, 200)
         .easing(TWEEN.Easing.Quadratic.Out);
 
-      pickupTruckRef.current!.rotation.y =
-        (isLeft ? -165 : 165) * (Math.PI / 180);
-      const resetRotation = new TWEEN.Tween(pickupTruckRef.current!.rotation)
-        .to(
-          {
-            y:
-              pickupTruckRef.current!.rotation.y +
-              (isLeft ? -15 : 15) * (Math.PI / 180),
-          },
-          50
-        )
+      playerCar.current!.rotation.y = -165 * (Math.PI / 180);
+      const resetRotation = new TWEEN.Tween(playerCar.current!.rotation)
+        .to({ y: playerCar.current!.rotation.y - 15 * (Math.PI / 180) }, 50)
         .easing(TWEEN.Easing.Quadratic.Out);
 
-      const tween = new TWEEN.Tween(pickupTruckRef.current!.position)
-        .to({ x: position + (isLeft ? -0.3 : 0.3) }, 200)
+      tweenLeft = new TWEEN.Tween(playerCar.current!.position)
+        .to({ x: playerCar.current!.position.x - 0.3 }, 200)
         .easing(TWEEN.Easing.Quadratic.Out)
         .onComplete(() => {
           resetRotation.start();
-          pickupTruckRef.current!.position.x = Number(
-            pickupTruckRef.current!.position.x.toFixed(2)
+          playerCar.current!.position.x = Number(
+            playerCar.current!.position.x.toFixed(2)
           );
         })
         .onUpdate(() => {
-          if (isLeft ? position < limit : position > limit) {
-            pickupTruckRef.current!.position.x = limit;
+          if (playerCar.current!.position.x < -0.46) {
+            playerCar.current!.position.x = -0.46;
           }
-          if (isLeft ? camera.position.x < -0.42 : camera.position.x > 0.21) {
-            camera.position.x = isLeft ? -0.42 : 0.21;
+
+          if (camera.position.x < -0.42) {
+            camera.position.x = -0.42;
           }
         });
 
-      if ((isLeft ? tweenRight : tweenLeft).isPlaying()) {
-        (isLeft ? tweenRight : tweenLeft).stop();
+      if (tweenRight?.isPlaying()) {
+        tweenRight.stop();
       }
 
-      tween.start();
-      tweenCamera.start();
+      tweenLeft.start();
+      tweenCameraLeft.start();
+    }
+  };
+
+  const moveRight = (camera: Camera) => {
+    if (playerCar.current!.position.x !== 0.44) {
+      playerCar.current!.rotation.y = 165 * (Math.PI / 180);
+      const resetRotation = new TWEEN.Tween(playerCar.current!.rotation)
+        .to({ y: playerCar.current!.rotation.y + 15 * (Math.PI / 180) }, 50)
+        .easing(TWEEN.Easing.Quadratic.Out);
+
+      const tweenCameraRight = new Tween(camera.position)
+        .to({ x: camera.position.x + 0.21 }, 200)
+        .easing(TWEEN.Easing.Quadratic.Out);
+      tweenCameraRight.start();
+
+      tweenRight = new TWEEN.Tween(playerCar.current!.position)
+        .to({ x: playerCar.current!.position.x + 0.3 }, 200)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .onComplete(() => {
+          resetRotation.start();
+
+          playerCar.current!.position.x = Number(
+            playerCar.current!.position.x.toFixed(2)
+          );
+        })
+        .onUpdate(() => {
+          if (playerCar.current!.position.x > 0.44) {
+            playerCar.current!.position.x = 0.44;
+          }
+          if (camera.position.x > 0.21) {
+            camera.position.x = 0.21;
+          }
+        });
+      if (tweenLeft?.isPlaying()) {
+        tweenLeft.stop();
+      }
+      tweenRight.start();
     }
   };
 
   useFrame((state, delta) => {
     TWEEN.update();
     document.onkeydown = (e) => {
+      if (!isGameOverRef.current) {
       if (e.key === " ") {
         if (state.clock.running) {
-          //state.clock.stop();
           pauseGame();
         } else {
-          // state.clock.start();
           resumeGame();
         }
       }
       if (e.key === "ArrowLeft") {
-        move(state.camera, "left");
+        moveLeft(state.camera);
       }
       if (e.key === "ArrowRight") {
-        move(state.camera, "right");
-      }
+        moveRight(state.camera);
+      }}
     };
     if (isGamePausedRef.current || isGameOverRef.current) {
       state.clock.stop();
@@ -498,24 +544,29 @@ export function RaceScene() {
           mainRoadRef.current!.position.z - roadSizeOnZAxis;
       }
     }
-    if (pickupTruckRef.current) {
-      playerBoxCollider.setFromObject(pickupTruckRef.current);
+    if (playerCar.current) {
+      playerBoxCollider.setFromObject(playerCar.current);
+ // Makes the playerCar smaller so it doesn't collide with the obstacle easily
+       modifiedPlayerBoxCollider.setFromObject(playerCar.current);
+      modifiedPlayerBoxCollider.max.z -= 0.3; // Reduce the max.z by 1
+      modifiedPlayerBoxCollider.min.x +=0.06
+      modifiedPlayerBoxCollider.max.x -=0.06
+  
+      //  modifiedPlayerBoxCollider.min.z += 0.8; // Increase the min.z by 1 
     }
 
     if (isHeadStartRef.current) {
       moveActiveObstacleOne(delta);
       moveActiveObstacleTwo(delta);
-      detectCollisionWithObstacleOne();
-      detectCollisionWithObstacleTwo();
+       detectCollisionWithObstacleOne();
+      detectCollisionWithObstacleTwo(); 
       moveActiveCoinOne(delta);
       moveActiveCoinTwo(delta);
       detectCollisionWithCoinOne();
       detectCollisionWithCoinTwo();
     }
 
-    // moveVisibleObstacles(delta);
-    // hideObstacles();
-    //spawnObstacles();
+    
   });
 
   return (
@@ -526,9 +577,44 @@ export function RaceScene() {
       <mesh ref={mainRoadTwoRef}>
         <MainRoadTwo />
       </mesh>
-      <mesh ref={pickupTruckRef} rotation={[0, 180 * (Math.PI / 180), 0]}>
+      <mesh
+        ref={pickupTruckRef}
+        scale={0.07}
+        position={[0.14, -0.33, 3.8]}
+        rotation={[0, 180 * (Math.PI / 180), 0]}
+        visible={false}
+      >
         <PickupTruck />
       </mesh>
+
+      <mesh
+        ref={SUVRef}
+        scale={0.07}
+        position={[0.14, -0.33, 3.8]}
+        rotation={[0, 180 * (Math.PI / 180), 0]}
+        visible={false}
+      >
+        <SUV />
+      </mesh>
+      <mesh
+        ref={ferrariRef}
+        scale={0.07}
+        position={[0.14, -0.33, 3.8]}
+        rotation={[0, 180 * (Math.PI / 180), 0]}
+        visible={false}
+      >
+        <Ferrari />
+      </mesh>
+      <mesh
+        ref={offroadRef}
+        scale={0.07}
+        position={[0.14, -0.33, 3.8]}
+        rotation={[0, 180 * (Math.PI / 180), 0]}
+        visible={false}
+      >
+        <Offroad />
+      </mesh>
+
       <group ref={activeObstacleOne}></group>
       <group ref={activeObstacleTwo}></group>
 

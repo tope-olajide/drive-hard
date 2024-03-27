@@ -1,5 +1,4 @@
 
-import { SkyBox } from "../../GLTFModelsLoader";
 
 import Button, {
   TotalCoinsAndScoresBoard,
@@ -19,9 +18,7 @@ const MainMenuScene = () => {
         </div>
         <SharedCanvasContainer>
           
-          <mesh>
-            <SkyBox />
-          </mesh>
+         
           <MainMenu />
         </SharedCanvasContainer>
       </div>

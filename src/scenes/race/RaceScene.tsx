@@ -1,12 +1,17 @@
 import { Camera, useFrame } from "@react-three/fiber";
 import { createElement, useEffect, useRef, useState } from "react";
 import {
+  BuildingBlockA,
+  BuildingBlockB,
+  BuildingBlockC,
+  BuildingBlockD,
   Ferrari,
   MainRoad,
   MainRoadTwo,
   Offroad,
   PickupTruck,
   SUV,
+  SkyBox,
 } from "../../GLTFModelsLoader";
 import { Box3, Group, Mesh, Object3D, Object3DEventMap, Vector3 } from "three";
 import TWEEN, { Tween } from "@tweenjs/tween.js";
@@ -62,7 +67,7 @@ export function RaceScene() {
     );
     if (gameOverModalContainer) {
       gameOverModalContainer.style.display = "block";
-    }  
+    }
     saveCoins();
     saveHighScore();
   };
@@ -76,14 +81,29 @@ export function RaceScene() {
       gameOverModalContainer.style.display = "none";
     }
   };
-let roadSizeOnZAxis = 0
- // const [roadSizeOnZAxis, setRoadSizeOnZAxis] = useState(0);
+  let roadSizeOnZAxis = 0;
+  // const [roadSizeOnZAxis, setRoadSizeOnZAxis] = useState(0);
   const mainRoadRef = useRef<Mesh>(null);
   const mainRoadTwoRef = useRef<Mesh>(null);
   const pickupTruckRef = useRef<Mesh>(null);
   const SUVRef = useRef<Mesh>(null);
   const offroadRef = useRef<Mesh>(null);
   const ferrariRef = useRef<Mesh>(null);
+
+  const BuildingBlockARef = useRef<Mesh>(null);
+  const BuildingBlockBRef = useRef<Mesh>(null);
+  const BuildingBlockCRef = useRef<Mesh>(null);
+  const BuildingBlockDRef = useRef<Mesh>(null);
+
+
+  const skyBoxRef = useRef<Mesh>(null);
+
+
+  let buildingBlockASize = 0;
+  let buildingBlockBSize = 0;
+  let buildingBlockCSize = 0;
+  let buildingBlockDSize = 0;
+
   const allCarsModels = [pickupTruckRef, SUVRef, offroadRef, ferrariRef];
 
   // let playerCar = allCarsModels[0];
@@ -112,11 +132,8 @@ let roadSizeOnZAxis = 0
   let activeCoinOne = useRef<Group<Object3DEventMap>>(null);
   let activeCoinTwo = useRef<Group<Object3DEventMap>>(null);
 
-
-  
   let playerBoxCollider = new Box3(new Vector3(), new Vector3());
   let modifiedPlayerBoxCollider = new Box3(new Vector3(), new Vector3());
-
 
   let obstacleOneBoxCollider = new Box3(new Vector3(), new Vector3());
   let obstacleTwoBoxCollider = new Box3(new Vector3(), new Vector3());
@@ -330,10 +347,8 @@ let roadSizeOnZAxis = 0
   };
 
   const handleGameRestart = () => {
-
-
     activeObstacleOne.current!.position.z = 20;
-    activeObstacleTwo.current!.position.z = 20
+    activeObstacleTwo.current!.position.z = 20;
     activeObstacleOne.current!.visible = false;
     activeObstacleTwo.current!.visible = false;
     isHeadStartRef.current = false;
@@ -397,8 +412,8 @@ let roadSizeOnZAxis = 0
     isGameOverRef.current = false;
     isGamePausedRef.current = false;
     const timer = setTimeout(() => {
-    //  spawnObstacleOne();
-     // spawnObstacleTwo();
+      //  spawnObstacleOne();
+      // spawnObstacleTwo();
 
       spawnCoinOne();
       spawnCoinTwo();
@@ -416,10 +431,38 @@ let roadSizeOnZAxis = 0
 
     if (mainRoadRef.current && mainRoadTwoRef.current) {
       const mainRoadboundingBox = new Box3().setFromObject(mainRoadRef.current);
-      
-      roadSizeOnZAxis =  mainRoadboundingBox.max.z - mainRoadboundingBox.min.z - 0.01
-      
+
+      roadSizeOnZAxis =
+        mainRoadboundingBox.max.z - mainRoadboundingBox.min.z - 0.01;
+
       mainRoadTwoRef.current.position.set(0, -0.4, -15);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (
+      BuildingBlockARef.current &&
+      BuildingBlockBRef.current &&
+      BuildingBlockCRef.current &&
+      BuildingBlockDRef.current
+    ) {
+      const buildingBlockABox = new Box3().setFromObject(
+        BuildingBlockARef.current
+      );
+      const buildingBlockBBox = new Box3().setFromObject(
+        BuildingBlockBRef.current
+      );
+      const buildingBlockCBox = new Box3().setFromObject(
+        BuildingBlockCRef.current
+      );
+      const buildingBlockDBox = new Box3().setFromObject(
+        BuildingBlockDRef.current
+      );
+
+      buildingBlockASize = buildingBlockABox.max.z - buildingBlockABox.min.z;
+      buildingBlockBSize = buildingBlockBBox.max.z - buildingBlockBBox.min.z;
+      buildingBlockCSize = buildingBlockCBox.max.z - buildingBlockCBox.min.z;
+      buildingBlockDSize = buildingBlockDBox.max.z - buildingBlockDBox.min.z;
     }
   }, []);
 
@@ -503,19 +546,20 @@ let roadSizeOnZAxis = 0
     TWEEN.update();
     document.onkeydown = (e) => {
       if (!isGameOverRef.current) {
-      if (e.key === " ") {
-        if (state.clock.running) {
-          pauseGame();
-        } else {
-          resumeGame();
+        if (e.key === " ") {
+          if (state.clock.running) {
+            pauseGame();
+          } else {
+            resumeGame();
+          }
+        }
+        if (e.key === "ArrowLeft") {
+          moveLeft(state.camera);
+        }
+        if (e.key === "ArrowRight") {
+          moveRight(state.camera);
         }
       }
-      if (e.key === "ArrowLeft") {
-        moveLeft(state.camera);
-      }
-      if (e.key === "ArrowRight") {
-        moveRight(state.camera);
-      }}
     };
     if (isGamePausedRef.current || isGameOverRef.current) {
       state.clock.stop();
@@ -546,27 +590,60 @@ let roadSizeOnZAxis = 0
     }
     if (playerCar.current) {
       playerBoxCollider.setFromObject(playerCar.current);
- // Makes the playerCar smaller so it doesn't collide with the obstacle easily
-       modifiedPlayerBoxCollider.setFromObject(playerCar.current);
+      // Makes the playerCar smaller so it doesn't collide with the obstacle easily
+      modifiedPlayerBoxCollider.setFromObject(playerCar.current);
       modifiedPlayerBoxCollider.max.z -= 0.3; // Reduce the max.z by 1
-      modifiedPlayerBoxCollider.min.x +=0.06
-      modifiedPlayerBoxCollider.max.x -=0.06
-  
-      //  modifiedPlayerBoxCollider.min.z += 0.8; // Increase the min.z by 1 
+      modifiedPlayerBoxCollider.min.x += 0.06;
+      modifiedPlayerBoxCollider.max.x -= 0.06;
+
+      //  modifiedPlayerBoxCollider.min.z += 0.8; // Increase the min.z by 1
     }
 
     if (isHeadStartRef.current) {
       moveActiveObstacleOne(delta);
       moveActiveObstacleTwo(delta);
-       detectCollisionWithObstacleOne();
-      detectCollisionWithObstacleTwo(); 
+      detectCollisionWithObstacleOne();
+      detectCollisionWithObstacleTwo();
       moveActiveCoinOne(delta);
       moveActiveCoinTwo(delta);
       detectCollisionWithCoinOne();
       detectCollisionWithCoinTwo();
     }
 
+    if (
+      BuildingBlockARef.current &&
+      BuildingBlockBRef.current &&
+      BuildingBlockCRef.current &&
+      BuildingBlockDRef.current
+    ) {
+      BuildingBlockARef.current.position.z += speed * delta;
+      BuildingBlockBRef.current.position.z += speed * delta;
+      BuildingBlockCRef.current.position.z += speed * delta;
+      BuildingBlockDRef.current.position.z += speed * delta;
     
+
+      if (BuildingBlockARef.current.position.z > 21) {
+        BuildingBlockARef.current.position.z =
+        BuildingBlockBRef.current.position.z - buildingBlockBSize;
+      }
+
+      if (BuildingBlockBRef.current.position.z > 21) {
+        BuildingBlockBRef.current.position.z =
+        BuildingBlockARef.current.position.z - buildingBlockASize;
+      }
+
+      if (BuildingBlockCRef.current.position.z > 21) {
+        BuildingBlockCRef.current.position.z =
+        BuildingBlockDRef.current.position.z - buildingBlockDSize;
+      }
+      if (BuildingBlockDRef.current.position.z > 21) {
+        BuildingBlockDRef.current.position.z =
+        BuildingBlockCRef.current.position.z - buildingBlockCSize;
+      }
+    }
+    if (skyBoxRef.current) {
+      skyBoxRef.current.rotation.y += 0.009 * delta;
+    }
   });
 
   return (
@@ -652,19 +729,35 @@ let roadSizeOnZAxis = 0
         </group>
       ))}
 
-      {/* <Html fullscreen>
-        <Modal />
-      </Html> */}
+      <mesh scale={0.05} position={[-1.7, -0.33, -3]} ref={BuildingBlockBRef}>
+        <BuildingBlockB />
+      </mesh>
+      <mesh scale={0.05} position={[-1.7, -0.33, 19]} ref={BuildingBlockARef}>
+        <BuildingBlockA />
+      </mesh>
+      <mesh
+        scale={0.05}
+        position={[1.7, -0.33, 3]}
+        rotation={[0, 180 * (Math.PI / 180), 0]}
+        ref={BuildingBlockDRef}
+      >
+        <BuildingBlockD />
+      </mesh>
 
-      {/* <mesh ref={playerBoxCollider}
-     
-     
-        scale={[0.1, 0.1, 0.1]}
-        position={[0,0,0]}
-     >
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color={'orange'} />
-    </mesh>  */}
+      <mesh
+        scale={0.05}
+        position={[1.7, -0.33, -16]}
+        rotation={[0, 180 * (Math.PI / 180), 0]}
+        ref={BuildingBlockCRef}
+      >
+        <BuildingBlockC />
+      </mesh>
+      <mesh
+       
+       ref={skyBoxRef}
+      >
+            <SkyBox />
+          </mesh>
     </>
   );
 }

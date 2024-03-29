@@ -8,7 +8,6 @@ export const SkyBox = () => {
 
 export const MainRoad = () => {
   const road = useLoader(GLTFLoader, "./assets/Asphalt.glb");
-
   return (
     <>
       <primitive object={road.scene} />
@@ -44,9 +43,6 @@ export const Offroad = () => {
 };
 
 
-
-
-
 export const SUV = () => {
   const pickup = useLoader(GLTFLoader, "./assets/SUV.glb");
   return (
@@ -58,6 +54,45 @@ export const SUV = () => {
 
 export const Ferrari = () => {
   const pickup = useLoader(GLTFLoader, "./assets/Ferrari.glb");
+  return (
+    <>
+      <primitive object={pickup.scene} />
+    </>
+  );
+};
+
+
+export const BuildingBlockA = () => {
+  const pickup = useLoader(GLTFLoader, "./assets/BuildingBlockA.glb");
+  return (
+    <>
+      <primitive object={pickup.scene} />
+    </>
+  );
+};
+
+export const BuildingBlockB = () => {
+  const pickup = useLoader(GLTFLoader, "./assets/BuildingBlockB.glb");
+  return (
+    <>
+      <primitive object={pickup.scene} />
+    </>
+  );
+};
+
+
+export const BuildingBlockC = () => {
+  const pickup = useLoader(GLTFLoader, "./assets/BuildingBlockC.glb");
+  return (
+    <>
+      <primitive object={pickup.scene} />
+    </>
+  );
+};
+
+
+export const BuildingBlockD = () => {
+  const pickup = useLoader(GLTFLoader, "./assets/BuildingBlockD.glb");
   return (
     <>
       <primitive object={pickup.scene} />

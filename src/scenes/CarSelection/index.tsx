@@ -1,5 +1,4 @@
 
-import { SkyBox } from "../../GLTFModelsLoader";
 
 import CarSelection from "./CarSelection";
 import { CarSelectionMenu, HomeMenu, TotalCoinsAndScoresBoard } from "../../ui-components/Components";
@@ -12,9 +11,7 @@ const CarSelectionScene = () => {
       <TotalCoinsAndScoresBoard />
       <HomeMenu />
       <SharedCanvasContainer> 
-        <mesh>
-          <SkyBox />
-        </mesh>
+     
         <CarSelection />
       </SharedCanvasContainer>
     </div>

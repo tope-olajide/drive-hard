@@ -6,6 +6,10 @@ import {
   Ferrari,
   Offroad,
   SUV,
+  BuildingBlockA,
+  BuildingBlockB,
+  BuildingBlockC,
+  BuildingBlockD,
 } from "../../GLTFModelsLoader";
 import { useEffect, useRef } from "react";
 import { Mesh } from "three";
@@ -302,6 +306,34 @@ const CarSelection = () => {
         visible={false}
       >
         <Offroad />
+      </mesh>
+      
+      <mesh
+        scale={ 0.05}
+        position={[-1.7, -0.33, -3]}
+      >
+        <BuildingBlockB />
+      </mesh>
+      <mesh
+        scale={ 0.05}
+        position={[-1.7, -0.33, 19]}
+      >
+        <BuildingBlockA />
+      </mesh>
+      <mesh
+        scale={ 0.05}
+        position={[1.7, -0.33, 3]}
+        rotation={[0, 180 * (Math.PI / 180), 0]}
+      >
+        <BuildingBlockD />
+      </mesh>
+      
+      <mesh
+        scale={ 0.05}
+        position={[1.7, -0.33, -16]}
+        rotation={[0, 180 * (Math.PI / 180), 0]}
+      >
+        <BuildingBlockC />
       </mesh>
     </>
   );

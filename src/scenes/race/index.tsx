@@ -23,9 +23,7 @@ function RaceSceneHome() {
       <div id="app">
         <SharedCanvasContainer>
          
-          <mesh>
-            <SkyBox />
-          </mesh>
+          
           <RaceScene />
         </SharedCanvasContainer>
       </div>

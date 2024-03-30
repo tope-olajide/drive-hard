@@ -53,14 +53,19 @@ export function RaceScene() {
     document.getElementById("gameOverModalContainer")!.style.display = "block";
     saveCoins();
     saveHighScore();
+    accelerationSound.pause();
   };
 
   const resumeGame = () => {
     isGamePausedRef.current = false;
+    accelerationSound.play();
     document.getElementById("gameOverModalContainer")!.style.display = "none";
   };
 
   const setGameOver = () => {
+    accelerationSound.pause();
+    
+    accelerationSound.currentTime = 0;
     isGameOverRef.current = true;
     const gameOverModalContainer = document.getElementById(
       "gameOverModalContainer"
@@ -73,6 +78,7 @@ export function RaceScene() {
   };
 
   const setRestartGame = () => {
+    accelerationSound.play();
     isGameOverRef.current = false;
     const gameOverModalContainer = document.getElementById(
       "gameOverModalContainer"
@@ -81,8 +87,7 @@ export function RaceScene() {
       gameOverModalContainer.style.display = "none";
     }
   };
-  let roadSizeOnZAxis = 0;
-  // const [roadSizeOnZAxis, setRoadSizeOnZAxis] = useState(0);
+let roadSizeOnZAxis = 0
   const mainRoadRef = useRef<Mesh>(null);
   const mainRoadTwoRef = useRef<Mesh>(null);
   const pickupTruckRef = useRef<Mesh>(null);
@@ -106,8 +111,6 @@ export function RaceScene() {
 
   const allCarsModels = [pickupTruckRef, SUVRef, offroadRef, ferrariRef];
 
-  // let playerCar = allCarsModels[0];
-
   let savedGameCars;
   let activatedCarIndex = 0;
 
@@ -119,6 +122,22 @@ export function RaceScene() {
 
   let playerCar = allCarsModels[activatedCarIndex];
 
+
+  const [accelerationSound] = useState(new Audio('./acceleration-1.mp3'));
+  const [coinSound] = useState(new Audio('./coin_2-89099.mp3'));
+  const [driftSound] = useState(new Audio('./drift-sound.mp3'));
+  const [crashSound] = useState(new Audio('./car-crash.mp3'));
+
+  useEffect(() => {
+
+    accelerationSound.play();
+    accelerationSound.loop = true;
+    driftSound.volume = 0.04;
+    return () => {
+      accelerationSound.pause();
+      accelerationSound.currentTime = 0;
+    };
+  }, []);
   useEffect(() => {
     playerCar.current!.visible = true;
 
@@ -267,6 +286,8 @@ export function RaceScene() {
         );
         if (modifiedPlayerBoxCollider.intersectsBox(obstacleOneBoxCollider)) {
           gameOver();
+          activeObstacleOne.current.position.z = -20
+          crashSound.play()
         }
       }
     }
@@ -280,6 +301,9 @@ export function RaceScene() {
         );
         if (modifiedPlayerBoxCollider.intersectsBox(obstacleTwoBoxCollider)) {
           gameOver();
+          activeObstacleTwo.current.position.z = -50
+          crashSound.play()
+          
         }
       }
     }
@@ -293,6 +317,8 @@ export function RaceScene() {
           if (!isGamePausedRef.current && !isGameOverRef.current) {
             activeCoinOne.current.children[i].position.z += 100;
             activeCoinOne.current.children[i].visible = false;
+            coinSound.currentTime = 0;
+            coinSound.play();
             increaseCoins();
             (
               document.querySelector(".coins-count") as HTMLElement
@@ -314,6 +340,9 @@ export function RaceScene() {
           if (!isGamePausedRef.current && !isGameOverRef.current) {
             activeCoinTwo.current.children[i].position.z += 100;
             activeCoinTwo.current.children[i].visible = false;
+            coinSound.currentTime = 0;
+            coinSound.play();
+            
             increaseCoins();
             (
               document.querySelector(".coins-count") as HTMLElement
@@ -468,6 +497,9 @@ export function RaceScene() {
 
   const moveLeft = (camera: Camera) => {
     if (playerCar.current!.position.x !== -0.46) {
+      
+      driftSound.currentTime = 0;
+      driftSound.play();
       const tweenCameraLeft = new Tween(camera.position)
         .to({ x: camera.position.x - 0.21 }, 200)
         .easing(TWEEN.Easing.Quadratic.Out);
@@ -507,6 +539,8 @@ export function RaceScene() {
 
   const moveRight = (camera: Camera) => {
     if (playerCar.current!.position.x !== 0.44) {
+      driftSound.currentTime = 0;
+      driftSound.play();
       playerCar.current!.rotation.y = 165 * (Math.PI / 180);
       const resetRotation = new TWEEN.Tween(playerCar.current!.rotation)
         .to({ y: playerCar.current!.rotation.y + 15 * (Math.PI / 180) }, 50)
@@ -542,6 +576,8 @@ export function RaceScene() {
     }
   };
 
+
+
   useFrame((state, delta) => {
     TWEEN.update();
     document.onkeydown = (e) => {
@@ -562,6 +598,7 @@ export function RaceScene() {
       }
     };
     if (isGamePausedRef.current || isGameOverRef.current) {
+      
       state.clock.stop();
     } else {
       state.clock.start();

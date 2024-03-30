@@ -7,6 +7,9 @@ html, body {
 }
 body{
   background: #4F2A87 url("./assets/bg.png") no-repeat fixed center;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
 }
 
 #app {
@@ -173,8 +176,14 @@ font-size: 16px;
 .current-coins-scores-container{
   position: absolute;
   z-index: 2;
-  color: rgb(50, 1, 107);
+  color: rgb(255, 255, 255);
   margin-left: 6px;
+  text-shadow: 0 0 4px #020005;
+}
+
+.current-coins-scores-container h3{
+ /*  background-color: #2106b923; */
+  padding: 4px;
 }
 
 .main-menu-container{

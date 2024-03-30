@@ -9,12 +9,26 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
   </group>;
 } */
 
+import { Audio, AudioListener, AudioLoader } from "three";
+
 const CameraController = () => {
   const { camera, gl } = useThree();
+
+  useEffect(() => {
+    const audioListener = new AudioListener();
+    camera.add(audioListener);
+    const audioLoader = new AudioLoader();
+    const sound = new Audio( audioListener );
+    audioLoader.load('./energetic-rock-trailer-140906.mp3', function (buffer) {
+      sound.setBuffer(buffer);
+      sound.setLoop(true);
+      sound.setVolume(0.5);
+      sound.play();
+    })
+}, []);
   useEffect(
     () => {
       const controls = new OrbitControls(camera, gl.domElement);
-
       controls.minDistance = 3;
       controls.maxDistance = 20;
       return () => {

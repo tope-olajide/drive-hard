@@ -5,7 +5,14 @@ import CarSelectionScene from "./scenes/CarSelection";
 import { useGlobalState } from "./store/GlobalStore";
 
 
+//const audio = new Audio('./energetic-rock-trailer-140906')
+
+
+
 function App() {
+
+
+
   const { currentScene } = useGlobalState();
 
   if (currentScene === "CarSelection") {

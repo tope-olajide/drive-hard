@@ -50,7 +50,7 @@ export function RaceScene() {
 
   const pauseGame = () => {
     isGamePausedRef.current = true;
-    document.getElementById("gameOverModalContainer")!.style.display = "block";
+    document.getElementById("pauseModalContainer")!.style.display = "block";
     saveCoins();
     saveHighScore();
     accelerationSound.pause();
@@ -59,7 +59,7 @@ export function RaceScene() {
   const resumeGame = () => {
     isGamePausedRef.current = false;
     accelerationSound.play();
-    document.getElementById("gameOverModalContainer")!.style.display = "none";
+    document.getElementById("pauseModalContainer")!.style.display = "none";
   };
 
   const setGameOver = () => {
@@ -118,15 +118,15 @@ let roadSizeOnZAxis = 0
   let tweenRight: Tween<Vector3>;
 
   savedGameCars = JSON.parse(localStorage.getItem("savedCarData")!);
-  activatedCarIndex = savedGameCars.findIndex((car) => car.isActive === true);
+  activatedCarIndex = savedGameCars.findIndex((car: { isActive: boolean; }) => car.isActive === true);
 
   let playerCar = allCarsModels[activatedCarIndex];
 
 
-  const [accelerationSound] = useState(new Audio('./acceleration-1.mp3'));
-  const [coinSound] = useState(new Audio('./coin_2-89099.mp3'));
-  const [driftSound] = useState(new Audio('./drift-sound.mp3'));
-  const [crashSound] = useState(new Audio('./car-crash.mp3'));
+  const [accelerationSound] = useState(new Audio('./assets/sounds/acceleration-1.mp3'));
+  const [coinSound] = useState(new Audio('./assets/sounds/coin_2-89099.mp3'));
+  const [driftSound] = useState(new Audio('./assets/sounds/drift-sound.mp3'));
+  const [crashSound] = useState(new Audio('./assets/sounds/car-crash.mp3'));
 
   useEffect(() => {
 
@@ -462,7 +462,7 @@ let roadSizeOnZAxis = 0
       const mainRoadboundingBox = new Box3().setFromObject(mainRoadRef.current);
 
       roadSizeOnZAxis =
-        mainRoadboundingBox.max.z - mainRoadboundingBox.min.z - 0.01;
+        mainRoadboundingBox.max.z - mainRoadboundingBox.min.z - 0.1;
 
       mainRoadTwoRef.current.position.set(0, -0.4, -15);
     }
@@ -627,7 +627,7 @@ let roadSizeOnZAxis = 0
     }
     if (playerCar.current) {
       playerBoxCollider.setFromObject(playerCar.current);
-      // Makes the playerCar smaller so it doesn't collide with the obstacle easily
+      // Makes the playerCar collider smaller so it doesn't detect small or near miss collision
       modifiedPlayerBoxCollider.setFromObject(playerCar.current);
       modifiedPlayerBoxCollider.max.z -= 0.3; // Reduce the max.z by 1
       modifiedPlayerBoxCollider.min.x += 0.06;
@@ -682,6 +682,23 @@ let roadSizeOnZAxis = 0
       skyBoxRef.current.rotation.y += 0.009 * delta;
     }
   });
+
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!isGameOverRef.current) {
+            handlePause()
+        }
+        
+      };
+
+      document.addEventListener("visibilitychange", handleVisibilityChange);
+
+      // Cleanup function
+      return () => {
+          document.removeEventListener("visibilitychange", handleVisibilityChange);
+      };
+  }, []);
 
   return (
     <>

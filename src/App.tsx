@@ -4,15 +4,9 @@ import CarSelectionScene from "./scenes/CarSelection";
 
 import { useGlobalState } from "./store/GlobalStore";
 
-
-//const audio = new Audio('./energetic-rock-trailer-140906')
-
-
+import PreloadAssetsScene from "./scenes/PreloadAssets";
 
 function App() {
-
-
-
   const { currentScene } = useGlobalState();
 
   if (currentScene === "CarSelection") {
@@ -29,11 +23,16 @@ function App() {
       </>
     );
   }
+  if (currentScene === "MainMenu") {
+    return (
+      <>
+        <MainMenuScene />
+      </>
+    );
+  }
   return (
     <>
-      
-          <MainMenuScene />
-        
+    <PreloadAssetsScene />
     </>
   );
 }

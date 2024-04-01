@@ -1,10 +1,6 @@
 import { useLoader } from '@react-three/fiber'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js'
 
-export function SkyBox() {
-    const fbx = useLoader(FBXLoader, './assets/Poimandres.fbx')
-    return <primitive object={fbx} />
-}
   
 export const Taxi = () => {
   const mesh = useLoader(FBXLoader, "./assets/Taxi.fbx");
@@ -75,11 +71,3 @@ export const Coin = () => {
   );
 }
 
-/* export const Sporty = () => {
-  const mesh = useLoader(FBXLoader, "./assets/Sporty.fbx");
-  return (
-    <>
-      <primitive object={mesh.clone()} />
-    </>
-  );
-} */

@@ -1,15 +1,17 @@
-
 import { RaceScene } from "./RaceScene";
-import { SkyBox } from "../../GLTFModelsLoader";
-import {CurrentCoinsAndScoresBoard, GameOverModal, PauseGameButton, PauseModal} from "../../ui-components/Components";
+import {
+  CurrentCoinsAndScoresBoard,
+  GameOverModal,
+  PauseGameButton,
+  PauseModal,
+} from "../../ui-components/Components";
 
 import SharedCanvasContainer from "../../SharedCanvasCointainer";
 
 function RaceSceneHome() {
-
   return (
     <>
-      <div style={{ display: "none" }}>
+      <div style={{ display: "none" }}  id="pauseModalContainer">
         <PauseModal />
       </div>
 
@@ -22,8 +24,6 @@ function RaceSceneHome() {
       <PauseGameButton />
       <div id="app">
         <SharedCanvasContainer>
-         
-          
           <RaceScene />
         </SharedCanvasContainer>
       </div>

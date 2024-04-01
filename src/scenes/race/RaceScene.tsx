@@ -50,7 +50,7 @@ export function RaceScene() {
 
   const pauseGame = () => {
     isGamePausedRef.current = true;
-    document.getElementById("gameOverModalContainer")!.style.display = "block";
+    document.getElementById("pauseModalContainer")!.style.display = "block";
     saveCoins();
     saveHighScore();
     accelerationSound.pause();
@@ -59,7 +59,7 @@ export function RaceScene() {
   const resumeGame = () => {
     isGamePausedRef.current = false;
     accelerationSound.play();
-    document.getElementById("gameOverModalContainer")!.style.display = "none";
+    document.getElementById("pauseModalContainer")!.style.display = "none";
   };
 
   const setGameOver = () => {
@@ -118,7 +118,7 @@ let roadSizeOnZAxis = 0
   let tweenRight: Tween<Vector3>;
 
   savedGameCars = JSON.parse(localStorage.getItem("savedCarData")!);
-  activatedCarIndex = savedGameCars.findIndex((car) => car.isActive === true);
+  activatedCarIndex = savedGameCars.findIndex((car: { isActive: boolean; }) => car.isActive === true);
 
   let playerCar = allCarsModels[activatedCarIndex];
 
@@ -627,7 +627,7 @@ let roadSizeOnZAxis = 0
     }
     if (playerCar.current) {
       playerBoxCollider.setFromObject(playerCar.current);
-      // Makes the playerCar smaller so it doesn't collide with the obstacle easily
+      // Makes the playerCar collider smaller so it doesn't detect small or near miss collision
       modifiedPlayerBoxCollider.setFromObject(playerCar.current);
       modifiedPlayerBoxCollider.max.z -= 0.3; // Reduce the max.z by 1
       modifiedPlayerBoxCollider.min.x += 0.06;
@@ -682,6 +682,23 @@ let roadSizeOnZAxis = 0
       skyBoxRef.current.rotation.y += 0.009 * delta;
     }
   });
+
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!isGameOverRef.current) {
+            handlePause()
+        }
+        
+      };
+
+      document.addEventListener("visibilitychange", handleVisibilityChange);
+
+      // Cleanup function
+      return () => {
+          document.removeEventListener("visibilitychange", handleVisibilityChange);
+      };
+  }, []);
 
   return (
     <>

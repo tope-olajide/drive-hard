@@ -1,6 +1,5 @@
 import {
   MainRoad,
-  MainRoadTwo,
   PickupTruck,
   Ferrari,
   Offroad,
@@ -11,12 +10,8 @@ import {
   BuildingBlockD,
   SkyBox,
 } from "../../GLTFModelsLoader";
-import { Suspense, useEffect, useRef } from "react";
-import { Mesh, Object3D } from "three";
-import { useGlobalState } from "../../store/GlobalStore";
+import { Suspense } from "react";
 import AssetsLoader from "../../AssetsLoader";
-import { useLoader } from "@react-three/fiber";
-import { GLTFLoader } from "three/examples/jsm/Addons.js";
 import {
   Ambulance,
   Bus,
@@ -27,7 +22,6 @@ import {
   Van,
 } from "../../FBXModelLoader";
 const PreloadAssets = () => {
-  const { switchToRacingScene, switchToCarSelectionScene } = useGlobalState();
 
   return (
     <>

@@ -172,7 +172,7 @@ const CarSelection = () => {
       localStorage.getItem("savedCarData")!
     );
     console.log(savedCarData)
-    const updatedCarData = savedCarData.map((playerInfo, index: number) => {
+    const updatedCarData = savedCarData.map((playerInfo: any, index: number) => {
       if (currentCarIndex === index) {
         return {
           ...playerInfo,
@@ -265,9 +265,10 @@ const CarSelection = () => {
   }
   }, []);
 
-  useFrame((state, delta) => {
+  useFrame(( delta) => {
     if (currentCar.current) {
-      currentCar.current.rotation.y += 1 * delta;
+      //@ts-ignore 
+      currentCar.current.rotation.y += 1* delta ;
     }
   });
 

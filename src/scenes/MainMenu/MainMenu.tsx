@@ -11,7 +11,7 @@ import {
   BuildingBlockD,
 } from "../../GLTFModelsLoader";
 import { useEffect, useRef } from "react";
-import { Mesh, Object3D } from "three";
+import { Mesh } from "three";
 import { useGlobalState } from "../../store/GlobalStore";
 const MainMenu = () => {
   const { switchToRacingScene, switchToCarSelectionScene } = useGlobalState();
@@ -64,7 +64,7 @@ const MainMenu = () => {
   useEffect(() => {
      savedGameCars = JSON.parse(localStorage.getItem("savedCarData")!);
        activatedCarIndex = savedGameCars.findIndex(
-    (car) => car.isActive === true
+    (car: { isActive: boolean; }) => car.isActive === true
     );
 
     playerCar = allCarsModels[activatedCarIndex];

@@ -1,15 +1,26 @@
-
-import React, { createContext, ReactNode, useContext, useState } from "react";
-
+import React, {
+  createContext,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useContext,
+  useState,
+} from "react";
 
 interface GameContextType {
-  currentScene: "MainMenu"|"Racing"|"CarSelection"
+  currentScene: "MainMenu" | "Racing" | "CarSelection" | "AssetsLoader";
+  progressBar: number;
   switchToMainMenuScene: () => void;
   switchToRacingScene: () => void;
   switchToCarSelectionScene: () => void;
+  increaseProgressBar: () => void;
+  assetName: string;
+  showAssetName: (name: string) => void;
 }
 
-const GlobalStateContext = createContext<GameContextType | undefined>(undefined);
+const GlobalStateContext = createContext<GameContextType | undefined>(
+  undefined
+);
 GlobalStateContext.displayName = "GlobalStateContext";
 
 export const useGlobalState = (): GameContextType => {
@@ -27,32 +38,41 @@ interface GlobalStateProviderProps {
 export const GlobalStateProvider: React.FC<GlobalStateProviderProps> = ({
   children,
 }) => {
- 
-  const [currentScene, setCurrentScene] = useState<"MainMenu" | "Racing" | "CarSelection">("MainMenu");
+  const [currentScene, setCurrentScene] = useState<
+    "MainMenu" | "Racing" | "CarSelection" | "AssetsLoader"
+  >("AssetsLoader");
 
-
-
+  const [progressBar, setProgressBar] = useState(5.55);
+  const [assetName, setAssetName] = useState("3D Assets:=>");
+  const showAssetName = (name: string) => {
+    setAssetName(name);
+  };
+  const increaseProgressBar = () => {
+    setProgressBar((prevProgressBar) => {
+      return prevProgressBar + 5.55;
+    });
+  };
   const switchToMainMenuScene = () => {
-    setCurrentScene("MainMenu") 
-    
-  }
+    setCurrentScene("MainMenu");
+    console.log(currentScene)
+  };
 
   const switchToRacingScene = () => {
-   
-    setCurrentScene("Racing") 
-  }
+    setCurrentScene("Racing");
+  };
   const switchToCarSelectionScene = () => {
-   
-    setCurrentScene("CarSelection")
-    
-  }
+    setCurrentScene("CarSelection");
+  };
 
   const value: GameContextType = {
-   
     switchToMainMenuScene,
     switchToRacingScene,
     switchToCarSelectionScene,
-currentScene
+    currentScene,
+    progressBar,
+    increaseProgressBar,
+    assetName,
+    showAssetName,
   };
 
   return (

@@ -123,10 +123,10 @@ let roadSizeOnZAxis = 0
   let playerCar = allCarsModels[activatedCarIndex];
 
 
-  const [accelerationSound] = useState(new Audio('./acceleration-1.mp3'));
-  const [coinSound] = useState(new Audio('./coin_2-89099.mp3'));
-  const [driftSound] = useState(new Audio('./drift-sound.mp3'));
-  const [crashSound] = useState(new Audio('./car-crash.mp3'));
+  const [accelerationSound] = useState(new Audio('./assets/sounds/acceleration-1.mp3'));
+  const [coinSound] = useState(new Audio('./assets/sounds/coin_2-89099.mp3'));
+  const [driftSound] = useState(new Audio('./assets/sounds/drift-sound.mp3'));
+  const [crashSound] = useState(new Audio('./assets/sounds/car-crash.mp3'));
 
   useEffect(() => {
 
@@ -462,7 +462,7 @@ let roadSizeOnZAxis = 0
       const mainRoadboundingBox = new Box3().setFromObject(mainRoadRef.current);
 
       roadSizeOnZAxis =
-        mainRoadboundingBox.max.z - mainRoadboundingBox.min.z - 0.01;
+        mainRoadboundingBox.max.z - mainRoadboundingBox.min.z - 0.1;
 
       mainRoadTwoRef.current.position.set(0, -0.4, -15);
     }

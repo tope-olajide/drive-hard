@@ -67,20 +67,19 @@ export const CurrentCoinsAndScoresBoard = () => {
 };
 
 export const TotalCoinsAndScoresBoard = () => {
-  const [highScore, setHighScore] = useState("0")
-  const [totalCoins, setTotalCoins] = useState("0")
+  const [highScore, setHighScore] = useState("0");
+  const [totalCoins, setTotalCoins] = useState("0");
   useEffect(() => {
-    const savedScore = localStorage.getItem("high-score")||"0"
-    setHighScore(savedScore)
+    const savedScore = localStorage.getItem("high-score") || "0";
+    setHighScore(savedScore);
 
-    const savedCoins = localStorage.getItem("total-coins")||"0"
-    setTotalCoins(savedCoins)
+    const savedCoins = localStorage.getItem("total-coins") || "0";
+    setTotalCoins(savedCoins);
   }, []);
-  
+
   return (
     <>
       <section className="current-coins-scores-container">
-        
         <h3>
           High Scores:<span className="scores-count">{highScore}</span>
         </h3>
@@ -93,7 +92,7 @@ export const TotalCoinsAndScoresBoard = () => {
 };
 
 export const GameOverModal = () => {
- // const {setRestartGame} =
+  // const {setRestartGame} =
   useGlobalState();
   return (
     <>
@@ -116,36 +115,79 @@ export const GameOverModal = () => {
   );
 };
 
-
 export const CarSelectionMenu = () => {
   return (
     <>
-    <section className="car-selection-container">
+      <section className="car-selection-container">
         <section className="car-selection-buttons">
- 
-      <Button name={"Prev"}  id="prevBtn" />
+          <Button name={"Prev"} id="prevBtn" />
           <h2 className="car-name"></h2>
-          <Button name={"Next"}  id="nextBtn" />
+          <Button name={"Next"} id="nextBtn" />
         </section>
         <button className="button" id="car-price-button">
           <span id="character-price-text"> 0</span>
-    </button>
+        </button>
         <button className="button" id="selectCarBtn">
           <span id="select-button-text"> Select </span>
         </button>
       </section>
     </>
-  )
-}
+  );
+};
 
 export const HomeMenu = () => {
   return (
     <>
-    <div className="home-menu">
+      <div className="home-menu">
         <button className="button" id="backButton">
-          <span><i className="fa-solid fa-home"></i></span>Back
+          <span>
+            <i className="fa-solid fa-home"></i>
+          </span>
+          Back
         </button>
       </div>
     </>
-  )
-}
+  );
+};
+
+export const AssetsLoaderStatus = () => {
+  const { progressBar, assetName, switchToMainMenuScene } = useGlobalState();
+  const [isLoaded, setIsLoaded] = useState(false);
+  useEffect(() => {
+    if (Math.round(progressBar) >= 100) {
+      setIsLoaded(true);
+      console.log("finished");
+    }
+  }, [progressBar]);
+  useEffect(() => {
+    const launchMenuButton = document.getElementById("launchMenuButton");
+
+    if (launchMenuButton) {
+      launchMenuButton.addEventListener("click", switchToMainMenuScene);
+
+      return () => {
+        launchMenuButton.removeEventListener("click", switchToMainMenuScene);
+      };
+    }
+  }, [isLoaded]);
+  return (
+    <>
+      <section className="preloader-container">
+        <div>
+          {!isLoaded ? (
+            <label>Loading... [{assetName}]</label>
+          ) : (
+            <label>Loading completed</label>
+          )}
+        </div>
+        <progress
+          id="preloader"
+          max="100"
+          value={Math.round(progressBar)}
+        ></progress>
+        <label>{Math.round(progressBar)}%</label>
+      </section>
+     {isLoaded?<Button name={"Launch"} id="launchMenuButton" />:""} 
+    </>
+  );
+};

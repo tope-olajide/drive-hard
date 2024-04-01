@@ -3,16 +3,14 @@ import MainMenuScene from "./scenes/MainMenu";
 import CarSelectionScene from "./scenes/CarSelection";
 
 import { useGlobalState } from "./store/GlobalStore";
-
-
-//const audio = new Audio('./energetic-rock-trailer-140906')
-
-
+import AssetsLoader from "./AssetsLoader";
+import { Suspense } from "react";
+import { useLoader } from "@react-three/fiber";
+import { GLTFLoader } from "three/examples/jsm/Addons.js";
+import { Ferrari } from "./GLTFModelsLoader";
+import PreloadAssets from "./scenes/PreloadAssets";
 
 function App() {
-
-
-
   const { currentScene } = useGlobalState();
 
   if (currentScene === "CarSelection") {
@@ -29,11 +27,16 @@ function App() {
       </>
     );
   }
+  if (currentScene === "MainMenu") {
+    return (
+      <>
+        <MainMenuScene />
+      </>
+    );
+  }
   return (
     <>
-      
-          <MainMenuScene />
-        
+    <PreloadAssets />
     </>
   );
 }

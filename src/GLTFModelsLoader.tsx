@@ -1,6 +1,6 @@
 import { useLoader } from "@react-three/fiber";
-
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+
 export const SkyBox = () => {
   const skybox = useLoader(GLTFLoader, "./assets/skybox.glb");
   return <primitive object={skybox.scene} />;
@@ -37,7 +37,7 @@ export const Offroad = () => {
   const pickup = useLoader(GLTFLoader, "./assets/Offroad.glb");
   return (
     <>
-      <primitive object={pickup.scene} />
+     <primitive object={pickup.scene} />
     </>
   );
 };
@@ -61,7 +61,6 @@ export const Ferrari = () => {
   );
 };
 
-
 export const BuildingBlockA = () => {
   const pickup = useLoader(GLTFLoader, "./assets/BuildingBlockA.glb");
   return (
@@ -80,7 +79,6 @@ export const BuildingBlockB = () => {
   );
 };
 
-
 export const BuildingBlockC = () => {
   const pickup = useLoader(GLTFLoader, "./assets/BuildingBlockC.glb");
   return (
@@ -89,7 +87,6 @@ export const BuildingBlockC = () => {
     </>
   );
 };
-
 
 export const BuildingBlockD = () => {
   const pickup = useLoader(GLTFLoader, "./assets/BuildingBlockD.glb");

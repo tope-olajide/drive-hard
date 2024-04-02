@@ -1,5 +1,5 @@
-import { Camera, useFrame } from "@react-three/fiber";
-import { createElement, useEffect, useRef, useState } from "react";
+import { Camera, useFrame, useThree } from "@react-three/fiber";
+import { createElement, useEffect, useRef } from "react";
 import {
   BuildingBlockA,
   BuildingBlockB,
@@ -38,6 +38,8 @@ import {
 import { useGlobalState } from "../../store/GlobalStore";
 
 export function RaceScene() {
+
+  const camera = useThree(state => state.camera)
   const { switchToMainMenuScene } = useGlobalState();
 
   const isGamePausedRef = useRef<boolean>(false);
@@ -53,19 +55,21 @@ export function RaceScene() {
     document.getElementById("pauseModalContainer")!.style.display = "block";
     saveCoins();
     saveHighScore();
-    accelerationSound.pause();
+    accelerationSoundRef.current.pause();
+    console.log({cameraPosition:camera.position})
+    console.log({cameraRotation:camera.rotation})
   };
 
   const resumeGame = () => {
     isGamePausedRef.current = false;
-    accelerationSound.play();
+    accelerationSoundRef.current.play();
     document.getElementById("pauseModalContainer")!.style.display = "none";
   };
 
   const setGameOver = () => {
-    accelerationSound.pause();
-    
-    accelerationSound.currentTime = 0;
+    accelerationSoundRef.current.pause();
+
+    accelerationSoundRef.current.currentTime = 0;
     isGameOverRef.current = true;
     const gameOverModalContainer = document.getElementById(
       "gameOverModalContainer"
@@ -78,7 +82,7 @@ export function RaceScene() {
   };
 
   const setRestartGame = () => {
-    accelerationSound.play();
+    accelerationSoundRef.current.play();
     isGameOverRef.current = false;
     const gameOverModalContainer = document.getElementById(
       "gameOverModalContainer"
@@ -87,7 +91,7 @@ export function RaceScene() {
       gameOverModalContainer.style.display = "none";
     }
   };
-let roadSizeOnZAxis = 0
+  let roadSizeOnZAxis = 0;
   const mainRoadRef = useRef<Mesh>(null);
   const mainRoadTwoRef = useRef<Mesh>(null);
   const pickupTruckRef = useRef<Mesh>(null);
@@ -100,9 +104,7 @@ let roadSizeOnZAxis = 0
   const BuildingBlockCRef = useRef<Mesh>(null);
   const BuildingBlockDRef = useRef<Mesh>(null);
 
-
   const skyBoxRef = useRef<Mesh>(null);
-
 
   let buildingBlockASize = 0;
   let buildingBlockBSize = 0;
@@ -118,24 +120,27 @@ let roadSizeOnZAxis = 0
   let tweenRight: Tween<Vector3>;
 
   savedGameCars = JSON.parse(localStorage.getItem("savedCarData")!);
-  activatedCarIndex = savedGameCars.findIndex((car: { isActive: boolean; }) => car.isActive === true);
+  activatedCarIndex = savedGameCars.findIndex(
+    (car: { isActive: boolean }) => car.isActive === true
+  );
 
   let playerCar = allCarsModels[activatedCarIndex];
 
+  const accelerationSoundRef = useRef(
+    new Audio("./assets/sounds/acceleration-1.mp3")
+  );
 
-  const [accelerationSound] = useState(new Audio('./assets/sounds/acceleration-1.mp3'));
-  const [coinSound] = useState(new Audio('./assets/sounds/coin_2-89099.mp3'));
-  const [driftSound] = useState(new Audio('./assets/sounds/drift-sound.mp3'));
-  const [crashSound] = useState(new Audio('./assets/sounds/car-crash.mp3'));
+  const coinSoundRef = useRef(new Audio("./assets/sounds/coin_2-89099.mp3"))
+  const driftSoundRef = useRef(new Audio("./assets/sounds/drift-sound.mp3"));
+  const crashSoundRef = useRef(new Audio("./assets/sounds/car-crash.mp3"));
 
   useEffect(() => {
-
-    accelerationSound.play();
-    accelerationSound.loop = true;
-    driftSound.volume = 0.04;
+    accelerationSoundRef.current.play();
+    accelerationSoundRef.current.loop = true;
+    driftSoundRef.current.volume = 0.08;
     return () => {
-      accelerationSound.pause();
-      accelerationSound.currentTime = 0;
+      accelerationSoundRef.current.pause();
+      accelerationSoundRef.current.currentTime = 0;
     };
   }, []);
   useEffect(() => {
@@ -286,8 +291,8 @@ let roadSizeOnZAxis = 0
         );
         if (modifiedPlayerBoxCollider.intersectsBox(obstacleOneBoxCollider)) {
           gameOver();
-          activeObstacleOne.current.position.z = -20
-          crashSound.play()
+          activeObstacleOne.current.position.z = -20;
+          crashSoundRef.current.play();
         }
       }
     }
@@ -301,9 +306,8 @@ let roadSizeOnZAxis = 0
         );
         if (modifiedPlayerBoxCollider.intersectsBox(obstacleTwoBoxCollider)) {
           gameOver();
-          activeObstacleTwo.current.position.z = -50
-          crashSound.play()
-          
+          activeObstacleTwo.current.position.z = -50;
+          crashSoundRef.current.play();
         }
       }
     }
@@ -317,8 +321,8 @@ let roadSizeOnZAxis = 0
           if (!isGamePausedRef.current && !isGameOverRef.current) {
             activeCoinOne.current.children[i].position.z += 100;
             activeCoinOne.current.children[i].visible = false;
-            coinSound.currentTime = 0;
-            coinSound.play();
+            coinSoundRef.current.currentTime = 0;
+            coinSoundRef.current.play();
             increaseCoins();
             (
               document.querySelector(".coins-count") as HTMLElement
@@ -340,9 +344,9 @@ let roadSizeOnZAxis = 0
           if (!isGamePausedRef.current && !isGameOverRef.current) {
             activeCoinTwo.current.children[i].position.z += 100;
             activeCoinTwo.current.children[i].visible = false;
-            coinSound.currentTime = 0;
-            coinSound.play();
-            
+            coinSoundRef.current.currentTime = 0;
+            coinSoundRef.current.play();
+
             increaseCoins();
             (
               document.querySelector(".coins-count") as HTMLElement
@@ -497,9 +501,8 @@ let roadSizeOnZAxis = 0
 
   const moveLeft = (camera: Camera) => {
     if (playerCar.current!.position.x !== -0.46) {
-      
-      driftSound.currentTime = 0;
-      driftSound.play();
+      driftSoundRef.current.currentTime = 0;
+      driftSoundRef.current.play();
       const tweenCameraLeft = new Tween(camera.position)
         .to({ x: camera.position.x - 0.21 }, 200)
         .easing(TWEEN.Easing.Quadratic.Out);
@@ -539,8 +542,8 @@ let roadSizeOnZAxis = 0
 
   const moveRight = (camera: Camera) => {
     if (playerCar.current!.position.x !== 0.44) {
-      driftSound.currentTime = 0;
-      driftSound.play();
+      driftSoundRef.current.currentTime = 0;
+      driftSoundRef.current.play();
       playerCar.current!.rotation.y = 165 * (Math.PI / 180);
       const resetRotation = new TWEEN.Tween(playerCar.current!.rotation)
         .to({ y: playerCar.current!.rotation.y + 15 * (Math.PI / 180) }, 50)
@@ -578,27 +581,28 @@ let roadSizeOnZAxis = 0
 
 
 
-  useFrame((state, delta) => {
-    TWEEN.update();
-    document.onkeydown = (e) => {
+      document.onkeydown = (e) => {
       if (!isGameOverRef.current) {
         if (e.key === " ") {
-          if (state.clock.running) {
+          if (!isGamePausedRef.current) {
             pauseGame();
           } else {
             resumeGame();
           }
         }
         if (e.key === "ArrowLeft") {
-          moveLeft(state.camera);
+          moveLeft(camera);
         }
         if (e.key === "ArrowRight") {
-          moveRight(state.camera);
+          moveRight(camera);
         }
       }
-    };
+  };
+  
+  useFrame((state, delta) => {
+    TWEEN.update();
+
     if (isGamePausedRef.current || isGameOverRef.current) {
-      
       state.clock.stop();
     } else {
       state.clock.start();
@@ -629,17 +633,16 @@ let roadSizeOnZAxis = 0
       playerBoxCollider.setFromObject(playerCar.current);
       // Makes the playerCar collider smaller so it doesn't detect small or near miss collision
       modifiedPlayerBoxCollider.setFromObject(playerCar.current);
-      modifiedPlayerBoxCollider.max.z -= 0.3; // Reduce the max.z by 1
+      modifiedPlayerBoxCollider.max.z -= 0.3; 
       modifiedPlayerBoxCollider.min.x += 0.06;
       modifiedPlayerBoxCollider.max.x -= 0.06;
 
-      //  modifiedPlayerBoxCollider.min.z += 0.8; // Increase the min.z by 1
     }
 
     if (isHeadStartRef.current) {
       moveActiveObstacleOne(delta);
       moveActiveObstacleTwo(delta);
-      detectCollisionWithObstacleOne();
+       detectCollisionWithObstacleOne();
       detectCollisionWithObstacleTwo();
       moveActiveCoinOne(delta);
       moveActiveCoinTwo(delta);
@@ -657,25 +660,24 @@ let roadSizeOnZAxis = 0
       BuildingBlockBRef.current.position.z += speed * delta;
       BuildingBlockCRef.current.position.z += speed * delta;
       BuildingBlockDRef.current.position.z += speed * delta;
-    
 
       if (BuildingBlockARef.current.position.z > 21) {
         BuildingBlockARef.current.position.z =
-        BuildingBlockBRef.current.position.z - buildingBlockBSize;
+          BuildingBlockBRef.current.position.z - buildingBlockBSize;
       }
 
       if (BuildingBlockBRef.current.position.z > 21) {
         BuildingBlockBRef.current.position.z =
-        BuildingBlockARef.current.position.z - buildingBlockASize;
+          BuildingBlockARef.current.position.z - buildingBlockASize;
       }
 
       if (BuildingBlockCRef.current.position.z > 21) {
         BuildingBlockCRef.current.position.z =
-        BuildingBlockDRef.current.position.z - buildingBlockDSize;
+          BuildingBlockDRef.current.position.z - buildingBlockDSize;
       }
       if (BuildingBlockDRef.current.position.z > 21) {
         BuildingBlockDRef.current.position.z =
-        BuildingBlockCRef.current.position.z - buildingBlockCSize;
+          BuildingBlockCRef.current.position.z - buildingBlockCSize;
       }
     }
     if (skyBoxRef.current) {
@@ -683,23 +685,84 @@ let roadSizeOnZAxis = 0
     }
   });
 
-
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (!isGameOverRef.current) {
-            handlePause()
-        }
-        
-      };
+        handlePause();
+      }
+    };
 
-      document.addEventListener("visibilitychange", handleVisibilityChange);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
-      // Cleanup function
-      return () => {
-          document.removeEventListener("visibilitychange", handleVisibilityChange);
-      };
+    // Cleanup function
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, []);
 
+
+
+
+ 
+  let touchstartX = 0;
+
+  let touchendX = 0;
+
+  let touchstartY = 0;
+
+  let touchendY = 0;
+
+  const handleTouch = () => {
+    const pageWidth = window.innerWidth || document.body.clientWidth;
+    const treshold = Math.max(1, Math.floor(0.01 * (pageWidth)));
+    const limit = Math.tan(45 * (1.5 / 180) * Math.PI);
+    const x = touchendX - touchstartX;
+    const y = touchendY - touchstartY;
+   
+    const yx = Math.abs(y / x);
+    if (Math.abs(x) > treshold || Math.abs(y) > treshold) {
+      if (yx <= limit) {
+        if (x < 0) {
+          moveLeft(camera);
+       
+        } else {
+          
+          moveRight(camera);
+        }
+      }
+    }
+};
+  
+useEffect(() => {
+  const gestureZone = (document.getElementById('app') as HTMLElement);
+
+   if (gestureZone){
+    gestureZone.addEventListener('touchstart', (event) => {
+      touchstartX = event.changedTouches[0].screenX;
+      touchstartY = event.changedTouches[0].screenY;
+    }, false);
+
+    gestureZone.addEventListener('touchend', (event) => {
+      touchendX = event.changedTouches[0].screenX;
+      touchendY = event.changedTouches[0].screenY;
+      handleTouch();
+    }, false);
+
+     return () => {
+      gestureZone.removeEventListener('touchstart', (event) => {
+        touchstartX = event.changedTouches[0].screenX;
+        touchstartY = event.changedTouches[0].screenY;
+      }, false);
+
+      gestureZone.removeEventListener('touchend', (event) => {
+        touchendX = event.changedTouches[0].screenX;
+        touchendY = event.changedTouches[0].screenY;
+        handleTouch();
+      }, false);
+       
+     };
+   }
+}, []); 
   return (
     <>
       <mesh ref={mainRoadRef}>
@@ -806,12 +869,9 @@ let roadSizeOnZAxis = 0
       >
         <BuildingBlockC />
       </mesh>
-      <mesh
-       
-       ref={skyBoxRef}
-      >
-            <SkyBox />
-          </mesh>
+      <mesh ref={skyBoxRef}>
+        <SkyBox />
+      </mesh>
     </>
   );
 }

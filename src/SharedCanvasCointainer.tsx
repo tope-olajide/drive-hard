@@ -1,3 +1,5 @@
+ // @ts-nocheck
+
 import { Canvas, useThree } from "@react-three/fiber";
 import { useEffect } from "react";
 /* import { PerspectiveCamera } from "three"; */
@@ -10,9 +12,10 @@ import { useEffect } from "react";
 } */
 
 import { Audio, AudioListener, AudioLoader } from "three";
+import { OrbitControls } from "three/examples/jsm/Addons.js";
 
 const CameraController = () => {
-  const { camera /* gl */ } = useThree();
+  const { camera,  gl  } = useThree();
 
   useEffect(() => {
     const audioListener = new AudioListener();
@@ -29,17 +32,18 @@ const CameraController = () => {
       }
     );
   }, []);
-  /* useEffect(
+   useEffect(
     () => {
       const controls = new OrbitControls(camera, gl.domElement);
       controls.minDistance = 3;
-      controls.maxDistance = 20;
+       controls.maxDistance = 20;
+       console.log(camera.position)
       return () => {
         controls.dispose();
       };
     },
     [camera, gl]
-  ); */
+  ); 
   return null;
 };
 
@@ -50,7 +54,7 @@ const SharedCanvasContainer = ({ children }: { children: any }) => {
       <directionalLight intensity={6} color="white" position={[0, 0.4, 1]} />
       {children}
       {/*  <CameraHelper /> */}
-      <CameraController />
+     {/*  <CameraController /> */}
     </Canvas>
   );
 };

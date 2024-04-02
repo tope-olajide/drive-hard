@@ -265,10 +265,9 @@ const CarSelection = () => {
   }
   }, []);
 
-  useFrame(( delta) => {
+  useFrame((_state, delta) => {
     if (currentCar.current) {
-      //@ts-ignore 
-      currentCar.current.rotation.y += 1* delta ;
+      currentCar.current.rotation.y += 1 * delta;
     }
   });
 

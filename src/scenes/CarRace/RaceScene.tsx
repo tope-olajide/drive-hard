@@ -137,6 +137,7 @@ export function CarRace() {
   useEffect(() => {
     accelerationSoundRef.current.play();
     accelerationSoundRef.current.loop = true;
+    driftSoundRef.current.volume = 0.8;
     driftSoundRef.current.volume = 0.08;
     return () => {
       accelerationSoundRef.current.pause();

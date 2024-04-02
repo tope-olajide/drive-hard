@@ -8,7 +8,7 @@ import {
 
 import SharedCanvasContainer from "../../SharedCanvasCointainer";
 
-function CarRaceScene() {
+const CarRaceScene = () => {
   return (
     <>
       <div style={{ display: "none" }}  id="pauseModalContainer">

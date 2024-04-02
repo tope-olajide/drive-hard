@@ -1,4 +1,4 @@
-import { RaceScene } from "./RaceScene";
+import { CarRace } from "./RaceScene";
 import {
   CurrentCoinsAndScoresBoard,
   GameOverModal,
@@ -8,7 +8,7 @@ import {
 
 import SharedCanvasContainer from "../../SharedCanvasCointainer";
 
-function RaceSceneHome() {
+function CarRaceScene() {
   return (
     <>
       <div style={{ display: "none" }}  id="pauseModalContainer">
@@ -24,11 +24,11 @@ function RaceSceneHome() {
       <PauseGameButton />
       <div id="app">
         <SharedCanvasContainer>
-          <RaceScene />
+          <CarRace />
         </SharedCanvasContainer>
       </div>
     </>
   );
 }
 
-export default RaceSceneHome;
+export default CarRaceScene;

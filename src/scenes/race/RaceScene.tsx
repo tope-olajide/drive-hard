@@ -37,7 +37,7 @@ import {
 
 import { useGlobalState } from "../../store/GlobalStore";
 
-export function RaceScene() {
+export function CarRace() {
 
   const camera = useThree(state => state.camera)
   const { switchToMainMenuScene } = useGlobalState();

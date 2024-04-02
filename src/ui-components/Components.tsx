@@ -1,4 +1,4 @@
-import { MouseEventHandler, useEffect, useState } from "react";
+import { MouseEventHandler, useEffect, useRef, useState } from "react";
 import { useGlobalState } from "../store/GlobalStore";
 
 const Button = ({
@@ -69,6 +69,7 @@ export const CurrentCoinsAndScoresBoard = () => {
 export const TotalCoinsAndScoresBoard = () => {
   const [highScore, setHighScore] = useState("0");
   const [totalCoins, setTotalCoins] = useState("0");
+  
   useEffect(() => {
     const savedScore = localStorage.getItem("high-score") || "0";
     setHighScore(savedScore);
@@ -152,29 +153,32 @@ export const HomeMenu = () => {
 
 export const AssetsLoaderStatus = () => {
   const { progressBar, assetName, switchToMainMenuScene } = useGlobalState();
-  const [isLoaded, setIsLoaded] = useState(false);
+  const isLoadedRef = useRef(false)
   useEffect(() => {
     if (Math.round(progressBar) >= 100) {
-      setIsLoaded(true);
+     
+      isLoadedRef.current = true
       console.log("finished");
-    }
-  }, [progressBar]);
-  useEffect(() => {
-    const launchMenuButton = document.getElementById("launchMenuButton");
 
-    if (launchMenuButton) {
+const launchMenuButton = document.getElementById("launchMenuButton");
+      
+      if (launchMenuButton) {
+      launchMenuButton.style.display = 'block';
       launchMenuButton.addEventListener("click", switchToMainMenuScene);
 
       return () => {
         launchMenuButton.removeEventListener("click", switchToMainMenuScene);
       };
     }
-  }, [isLoaded]);
+    }
+
+  }, [progressBar]);
+
   return (
     <>
       <section className="preloader-container">
         <div>
-          {!isLoaded ? (
+          {!isLoadedRef.current ? (
             <label>Loading... [{assetName}]</label>
           ) : (
             <label>Loading completed</label>
@@ -187,7 +191,7 @@ export const AssetsLoaderStatus = () => {
         ></progress>
         <label>{Math.round(progressBar)}%</label>
       </section>
-     {isLoaded?<Button name={"Launch"} id="launchMenuButton" />:""} 
+    <Button name={"Launch"} id="launchMenuButton" />
     </>
   );
 };

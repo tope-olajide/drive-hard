@@ -36,20 +36,20 @@ const MainMenu = () => {
     },
     {
       name: "SUV",
-      price: 200,
+      price:1000,
       isLocked: true,
       isActive: false,
     },
     {
       name: "Offroad",
-      price: 500,
+      price: 5000,
       isLocked: true,
       isActive: false,
     },
 
     {
       name: "Ferrari",
-      price: 5000,
+      price: 10000,
       isLocked: true,
       isActive: false,
     },

@@ -56,8 +56,7 @@ export function CarRace() {
     saveCoins();
     saveHighScore();
     accelerationSoundRef.current.pause();
-    console.log({cameraPosition:camera.position})
-    console.log({cameraRotation:camera.rotation})
+
   };
 
   const resumeGame = () => {
@@ -473,6 +472,13 @@ export function CarRace() {
     }
   }, []);
 
+  
+  useEffect(() => {
+    
+    camera.position.y = 0.2
+    camera.position.z = 5.2
+  }, []);
+
   useEffect(() => {
     if (
       BuildingBlockARef.current &&
@@ -695,7 +701,6 @@ export function CarRace() {
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
-    // Cleanup function
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
@@ -774,7 +779,7 @@ useEffect(() => {
       </mesh>
       <mesh
         ref={pickupTruckRef}
-        scale={0.07}
+        scale={0.065}
         position={[0.14, -0.33, 3.8]}
         rotation={[0, 180 * (Math.PI / 180), 0]}
         visible={false}
@@ -784,7 +789,7 @@ useEffect(() => {
 
       <mesh
         ref={SUVRef}
-        scale={0.07}
+        scale={0.065}
         position={[0.14, -0.33, 3.8]}
         rotation={[0, 180 * (Math.PI / 180), 0]}
         visible={false}
@@ -847,15 +852,15 @@ useEffect(() => {
         </group>
       ))}
 
-      <mesh scale={0.05} position={[-1.7, -0.33, -3]} ref={BuildingBlockBRef}>
+      <mesh scale={0.05} position={[-1.6, -0.33, -3]} ref={BuildingBlockBRef}>
         <BuildingBlockB />
       </mesh>
-      <mesh scale={0.05} position={[-1.7, -0.33, 19]} ref={BuildingBlockARef}>
+      <mesh scale={0.05} position={[-1.6, -0.33, 19]} ref={BuildingBlockARef}>
         <BuildingBlockA />
       </mesh>
       <mesh
         scale={0.05}
-        position={[1.7, -0.33, 3]}
+        position={[1.6, -0.33, 3]}
         rotation={[0, 180 * (Math.PI / 180), 0]}
         ref={BuildingBlockDRef}
       >
@@ -864,7 +869,7 @@ useEffect(() => {
 
       <mesh
         scale={0.05}
-        position={[1.7, -0.33, -16]}
+        position={[1.6, -0.33, -16]}
         rotation={[0, 180 * (Math.PI / 180), 0]}
         ref={BuildingBlockCRef}
       >

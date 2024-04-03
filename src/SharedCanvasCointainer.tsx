@@ -27,12 +27,12 @@ const CameraController = () => {
       function (buffer) {
         sound.setBuffer(buffer);
         sound.setLoop(true);
-        sound.setVolume(0.2);
+        sound.setVolume(0.5);
         sound.play();
       }
     );
   }, []);
-  /*  useEffect(
+    useEffect(
     () => {
       const controls = new OrbitControls(camera, gl.domElement);
       controls.minDistance = 3;
@@ -43,7 +43,7 @@ const CameraController = () => {
       };
     },
     [camera, gl]
-  ); */ 
+  );
   return null;
 };
 

@@ -476,7 +476,7 @@ export function CarRace() {
   useEffect(() => {
     
     camera.position.y = 0.2
-    camera.position.z = 5.2
+    camera.position.z = 5
   }, []);
 
   useEffect(() => {

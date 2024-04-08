@@ -136,8 +136,8 @@ export function CarRace() {
   useEffect(() => {
     accelerationSoundRef.current.play();
     accelerationSoundRef.current.loop = true;
-    driftSoundRef.current.volume = 0.8;
-    driftSoundRef.current.volume = 0.08;
+    driftSoundRef.current.volume = 0.1;
+    coinSoundRef.current.volume = 0.4;
     return () => {
       accelerationSoundRef.current.pause();
       accelerationSoundRef.current.currentTime = 0;
@@ -779,7 +779,7 @@ useEffect(() => {
       </mesh>
       <mesh
         ref={pickupTruckRef}
-        scale={0.065}
+        scale={0.07}
         position={[0.14, -0.33, 3.8]}
         rotation={[0, 180 * (Math.PI / 180), 0]}
         visible={false}
@@ -789,7 +789,7 @@ useEffect(() => {
 
       <mesh
         ref={SUVRef}
-        scale={0.065}
+        scale={0.07}
         position={[0.14, -0.33, 3.8]}
         rotation={[0, 180 * (Math.PI / 180), 0]}
         visible={false}

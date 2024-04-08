@@ -70,7 +70,6 @@ const CarSelection = () => {
   const nextCar = () => {
     if (currentCarIndex + 1 < savedGameCars.length) {
       currentCarIndex += 1;
-      console.log(currentCarIndex);
       currentCar.current!.visible = false;
       currentCar = allCarsModels[currentCarIndex];
       currentCar.current!.visible = true;
@@ -120,7 +119,6 @@ const CarSelection = () => {
   const previousCar = () => {
     if (currentCarIndex != 0) {
       currentCarIndex -= 1;
-      console.log(currentCarIndex);
       currentCar.current!.visible = false;
       currentCar = allCarsModels[currentCarIndex];
       currentCar.current!.visible = true;
@@ -171,7 +169,6 @@ const CarSelection = () => {
     const savedCarData = JSON.parse(
       localStorage.getItem("savedCarData")!
     );
-    console.log(savedCarData)
     const updatedCarData = savedCarData.map((playerInfo: any, index: number) => {
       if (currentCarIndex === index) {
         return {
